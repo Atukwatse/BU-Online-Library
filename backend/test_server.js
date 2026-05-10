@@ -347,12 +347,27 @@ app.get('/api/reviews', async (req, res) => {
   } catch (err) { res.status(500).json({ status: 'error', message: err.message }); }
 });
 
+// GET all reviews
+app.get('/api/reviews', async (req, res) => {
+  try {
+    const reviews = await db.all('SELECT * FROM Reviews ORDER BY CreatedAt DESC');
+    res.json({ status: 'success', data: reviews });
+  } catch (err) { res.status(500).json({ status: 'error', message: err.message }); }
+});
+
+// GET reviews for a specific service
+app.get('/api/reviews/:service', async (req, res) => {
+  try {
+    const reviews = await db.all('SELECT * FROM Reviews WHERE Service = ? ORDER BY CreatedAt DESC', [req.params.service]);
+    res.json({ status: 'success', data: reviews });
+  } catch (err) { res.status(500).json({ status: 'error', message: err.message }); }
+});
+
 // POST a new review (anyone visiting a service page)
 app.post('/api/reviews', async (req, res) => {
   try {
     const { rating, comment, service, userName, userEmail } = req.body;
 
-    // Optionally get from token
     const auth = req.headers.authorization;
     const token = auth ? auth.replace('Bearer ', '') : null;
     const currentUser = token ? tokenStore.get(token) : null;
@@ -415,6 +430,16 @@ app.delete('/api/books/:id', async (req, res) => {
 });
 
 // ─── Events Admin CRUD ───────────────────────────────────────────────────────
+app.post('/api/events', async (req, res) => {
+  try {
+    const { Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees } = req.body;
+    const result = await db.run('INSERT INTO Events (Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+      [Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees || 100, 'Active']);
+    const newEvent = await db.get('SELECT * FROM Events WHERE EventID = ?', [result.lastID]);
+    res.status(201).json({ status: 'success', data: newEvent });
+  } catch (err) { res.status(500).json({ status: 'error', message: err.message }); }
+});
+
 app.put('/api/events/:id', async (req, res) => {
   try {
     const { Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees, Status } = req.body;

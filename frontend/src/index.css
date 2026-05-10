@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans bg-white text-gray-800;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply hover:text-secondary transition-colors duration-300 font-medium;
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded-lg font-semibold transition-all duration-300;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary/90;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-primary hover:bg-white;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6;
+  }
+  
+  .input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary;
+  }
+}
+
+/* ── Hero Banner Animations ── */
+
+/* Entrance: slide in from left, then float forever */
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Entrance: slide in from right, then float forever */
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Entrance: rise up, then float forever */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Continuous gentle float — bobs up & down endlessly */
+@keyframes floatY {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Slightly slower float for the subtitle so they move at different speeds */
+@keyframes floatYSlow {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+.hero-title {
+  /* Slide in from left (0.9s), then float up-down forever starting at 0.9s */
+  animation:
+    fadeInLeft 0.9s cubic-bezier(0.22, 1, 0.36, 1) both,
+    floatY 4s ease-in-out 0.9s infinite;
+}
+
+.hero-subtitle {
+  /* Slide in from right (0.9s, 0.25s delay), then float forever */
+  animation:
+    fadeInRight 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both,
+    floatYSlow 5s ease-in-out 1.15s infinite;
+}
+
+.hero-actions {
+  /* Rise up (0.8s, 0.5s delay), then float forever */
+  animation:
+    fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both,
+    floatYSlow 6s ease-in-out 1.3s infinite;
+}

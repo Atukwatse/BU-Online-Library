@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}500 | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container empty-state">
+        <img src="{{ url_for('static', filename='images/error2.png') }}" alt="Server error">
+        <h1>Something went wrong</h1>
+        <p>An internal server error occurred. Please try again shortly or contact the library support team.</p>
+        <a class="button" href="{{ url_for('main.home') }}">Return Home</a>
+    </div>
+</section>
+{% endblock %}

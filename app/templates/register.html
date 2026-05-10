@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Register | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container auth-shell">
+        <div class="auth-card">
+            <span class="eyebrow">User Account</span>
+            <h1>Create your library account</h1>
+            <form method="post" class="form-grid">
+                {{ form.hidden_tag() }}
+                <label>
+                    {{ form.name.label }}
+                    {{ form.name() }}
+                    {% for error in form.name.errors %}<small class="error-text">{{ error }}</small>{% endfor %}
+                </label>
+                <label>
+                    {{ form.email.label }}
+                    {{ form.email() }}
+                    {% for error in form.email.errors %}<small class="error-text">{{ error }}</small>{% endfor %}
+                </label>
+                <label>
+                    {{ form.password.label }}
+                    {{ form.password() }}
+                    {% for error in form.password.errors %}<small class="error-text">{{ error }}</small>{% endfor %}
+                </label>
+                <label>
+                    {{ form.confirm_password.label }}
+                    {{ form.confirm_password() }}
+                </label>
+                {{ form.submit(class_='button') }}
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

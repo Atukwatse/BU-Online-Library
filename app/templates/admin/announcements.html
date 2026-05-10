@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Announcements | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container split-grid admin-layout">
+        <div class="auth-card">
+            <span class="eyebrow">Post announcements</span>
+            <h1>Manage announcements</h1>
+            <form method="post" class="form-grid">
+                {{ form.hidden_tag() }}
+                <label>{{ form.title.label }}{{ form.title() }}</label>
+                <label>{{ form.content.label }}{{ form.content(rows=6) }}</label>
+                {{ form.submit(class_='button') }}
+            </form>
+        </div>
+        <div>
+            <h2>Latest announcements</h2>
+            <div class="stack-list">
+                {% for item in announcements %}
+                    <article class="stack-card">
+                        <h3>{{ item.title }}</h3>
+                        <p>{{ item.content }}</p>
+                        <form method="post" action="{{ url_for('admin.delete_announcement', announcement_id=item.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="button danger small" type="submit">Delete</button>
+                        </form>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

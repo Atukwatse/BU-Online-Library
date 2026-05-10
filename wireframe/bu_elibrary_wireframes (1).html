@@ -1,0 +1,1068 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:monospace}
+:root{
+  --bg:#f5f5f0;--surface:#fff;--border:#222;--text:#111;--muted:#555;--light:#e8e8e0;
+  --accent:#111;--radius:3px;
+}
+.wf-app{background:var(--bg);min-height:600px;font-family:'Courier New',monospace;color:var(--text);font-size:12px}
+.top-bar{background:#111;color:#fff;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top-bar h1{font-size:13px;font-weight:700;letter-spacing:1px;flex:1}
+.screen-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.stab{background:transparent;border:1px solid #444;color:#aaa;padding:3px 8px;font-size:10px;cursor:pointer;border-radius:2px;font-family:monospace}
+.stab.active{background:#fff;color:#111;border-color:#fff}
+.view-toggle{display:flex;gap:4px;margin-left:auto}
+.vtbtn{background:transparent;border:1px solid #444;color:#aaa;padding:3px 10px;font-size:10px;cursor:pointer;font-family:monospace}
+.vtbtn.active{background:#fff;color:#111;border-color:#fff}
+.wf-body{display:flex;gap:0;min-height:540px}
+.wf-sidebar{width:160px;background:#1a1a1a;padding:12px 8px;flex-shrink:0}
+.wf-sidebar h3{color:#666;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding:0 4px}
+.wf-sidebar-group{margin-bottom:14px}
+.wf-snav{list-style:none}
+.wf-snav li{padding:5px 8px;color:#aaa;font-size:10px;cursor:pointer;border-radius:2px;border-left:2px solid transparent}
+.wf-snav li:hover{background:#333;color:#fff}
+.wf-snav li.active{background:#333;color:#fff;border-left:2px solid #fff}
+.wf-canvas{flex:1;padding:16px;overflow-y:auto;background:var(--bg)}
+.wf-canvas.mobile-view{display:flex;justify-content:center}
+.mobile-frame{width:375px;border:2px solid #222;border-radius:8px;overflow:hidden}
+
+/* Wireframe components */
+.wf-screen{background:#fff;border:1.5px solid #222;position:relative}
+.wf-screen.mobile{width:375px}
+.wf-header{background:#fff;border-bottom:1.5px solid #222;padding:10px 16px;display:flex;align-items:center;gap:8px}
+.wf-logo{border:1.5px solid #222;padding:4px 10px;font-size:10px;font-weight:700;white-space:nowrap}
+.wf-nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.wf-nav span{font-size:9px;padding:3px 7px;border:1px solid #aaa;cursor:pointer}
+.wf-nav span.active-nav{border:1.5px solid #222;font-weight:700}
+.wf-nav-btn{border:1.5px solid #222;padding:3px 10px;font-size:9px;font-weight:700}
+.wf-section{padding:14px 16px;border-bottom:1px solid #e0e0e0}
+.wf-section-label{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.wf-section-label::after{content:'';flex:1;height:1px;background:#ddd}
+.wf-hero{background:#f0f0ea;border:1.5px dashed #999;padding:24px 16px;text-align:center;position:relative}
+.wf-hero-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.wf-hero-sub{font-size:10px;color:#666;margin-bottom:12px}
+.wf-searchbar{display:flex;border:1.5px solid #222;overflow:hidden;max-width:480px;margin:0 auto}
+.wf-searchbar input{flex:1;border:none;padding:8px 10px;font-size:11px;font-family:monospace;background:#fff;outline:none}
+.wf-searchbar button{background:#222;color:#fff;border:none;padding:8px 14px;font-size:10px;font-family:monospace;cursor:pointer}
+.wf-annotation{background:#fffde7;border:1px dashed #bbb;font-size:9px;color:#555;padding:3px 7px;position:absolute;border-radius:2px}
+.book-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.book-card{border:1.5px solid #222;padding:8px}
+.book-thumb{background:#e8e8e0;border:1px solid #ccc;height:80px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#888;margin-bottom:6px}
+.book-title{font-size:9px;font-weight:700;margin-bottom:2px}
+.book-author{font-size:8px;color:#666;margin-bottom:6px}
+.book-btn{border:1.5px solid #222;padding:3px 8px;font-size:8px;font-weight:700;cursor:pointer;background:transparent;font-family:monospace}
+.book-btn.filled{background:#222;color:#fff}
+.wf-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wf-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.wf-4col{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.wf-card{border:1.5px solid #222;padding:10px}
+.wf-card h4{font-size:10px;font-weight:700;margin-bottom:4px}
+.wf-card p{font-size:9px;color:#666;line-height:1.5}
+.wf-card .wf-badge{display:inline-block;border:1px solid #222;padding:1px 6px;font-size:8px;margin-bottom:4px}
+.wf-btn{display:inline-block;border:1.5px solid #222;padding:6px 14px;font-size:10px;font-weight:700;cursor:pointer;background:transparent;font-family:monospace}
+.wf-btn.filled{background:#222;color:#fff}
+.wf-btn.sm{padding:3px 10px;font-size:9px}
+.wf-input-group{margin-bottom:10px}
+.wf-input-group label{display:block;font-size:9px;font-weight:700;margin-bottom:3px}
+.wf-input{width:100%;border:1.5px solid #222;padding:7px 10px;font-size:10px;font-family:monospace;background:#fff;outline:none}
+.wf-select{width:100%;border:1.5px solid #222;padding:7px 10px;font-size:10px;font-family:monospace;background:#fff;outline:none}
+.wf-divider{text-align:center;font-size:9px;color:#999;margin:8px 0;display:flex;align-items:center;gap:8px}
+.wf-divider::before,.wf-divider::after{content:'';flex:1;height:1px;background:#ddd}
+.wf-google-btn{width:100%;border:1.5px solid #222;padding:7px;font-size:10px;font-family:monospace;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.wf-footer{background:#f0f0ea;border-top:1.5px solid #222;padding:14px 16px}
+.wf-footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.wf-footer h5{font-size:9px;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.wf-footer p,.wf-footer a{font-size:8px;color:#666;display:block;margin-bottom:2px}
+.wf-footer-bottom{border-top:1px solid #ccc;margin-top:10px;padding-top:8px;font-size:8px;color:#888;display:flex;justify-content:space-between}
+/* Filter panel */
+.filter-panel{border:1.5px solid #222;padding:10px;background:#f9f9f7}
+.filter-panel h4{font-size:10px;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #ddd}
+/* Dashboard */
+.dash-layout{display:flex;min-height:400px}
+.dash-sidebar{width:160px;background:#111;padding:12px 8px;flex-shrink:0}
+.dash-sidebar h3{color:#555;font-size:8px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.dash-nav li{list-style:none;padding:6px 8px;font-size:9px;color:#aaa;border-left:2px solid transparent;cursor:pointer;margin-bottom:2px}
+.dash-nav li:hover,.dash-nav li.active{color:#fff;border-left:2px solid #fff;background:#222}
+.dash-main{flex:1;padding:14px}
+.dash-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.stat-card{border:1.5px solid #222;padding:10px;text-align:center}
+.stat-card .stat-num{font-size:20px;font-weight:700;margin-bottom:2px}
+.stat-card .stat-label{font-size:8px;color:#666;text-transform:uppercase;letter-spacing:.5px}
+.wf-table{width:100%;border-collapse:collapse;font-size:9px}
+.wf-table th{background:#222;color:#fff;padding:6px 10px;text-align:left;font-size:9px}
+.wf-table td{padding:6px 10px;border-bottom:1px solid #eee}
+.wf-table tr:nth-child(even) td{background:#f9f9f7}
+.wf-table .td-actions{display:flex;gap:4px}
+.wf-table .ta-btn{border:1px solid #222;padding:2px 6px;font-size:8px;cursor:pointer;font-family:monospace}
+/* Event card */
+.event-card{border:1.5px solid #222;padding:10px}
+.event-date{font-size:9px;color:#888;margin-bottom:4px}
+.event-type{display:inline-block;border:1px solid #222;padding:1px 6px;font-size:8px;margin-bottom:4px}
+/* Help */
+.faq-item{border:1px solid #ddd;padding:8px 10px;margin-bottom:4px}
+.faq-item summary{font-size:10px;font-weight:700;cursor:pointer}
+/* Ticket */
+.ticket-box{border:1.5px solid #222;padding:14px;max-width:480px}
+/* Mobile specific */
+.mob-header{padding:10px 12px;border-bottom:1.5px solid #222;display:flex;align-items:center;justify-content:space-between}
+.mob-menu-icon{font-size:14px;font-weight:700}
+.mob-book-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mob-nav-bottom{border-top:1.5px solid #222;display:flex;background:#fff}
+.mob-nav-bottom span{flex:1;text-align:center;padding:8px 4px;font-size:8px;border-right:1px solid #eee}
+.mob-nav-bottom span:last-child{border-right:none}
+/* Flow arrows */
+.flow-note{display:inline-block;background:#fffde7;border:1px dashed #ccc;font-size:8px;padding:2px 6px;color:#888;margin-left:6px}
+/* Figma panel */
+.figma-panel{background:#111;color:#0f0;font-family:monospace;font-size:10px;padding:12px;max-height:300px;overflow-y:auto;border:1.5px solid #333}
+.figma-panel pre{white-space:pre-wrap;line-height:1.6}
+</style>
+
+<div class="wf-app">
+  <!-- Top bar -->
+  <div class="top-bar">
+    <h1>BU E-LIBRARY — WIREFRAME SYSTEM</h1>
+    <div class="screen-tabs" id="screenTabs">
+      <button class="stab active" onclick="showScreen('home')">Home</button>
+      <button class="stab" onclick="showScreen('ebooks')">E-Books</button>
+      <button class="stab" onclick="showScreen('events')">Events</button>
+      <button class="stab" onclick="showScreen('special')">Special Books</button>
+      <button class="stab" onclick="showScreen('services')">Services</button>
+      <button class="stab" onclick="showScreen('auth')">Auth</button>
+      <button class="stab" onclick="showScreen('admin')">Admin Dash</button>
+      <button class="stab" onclick="showScreen('staff')">Staff Dash</button>
+      <button class="stab" onclick="showScreen('user')">User Dash</button>
+      <button class="stab" onclick="showScreen('forms')">Forms</button>
+      <button class="stab" onclick="showScreen('help')">Help</button>
+      <button class="stab" onclick="showScreen('figma')">Figma JSON</button>
+    </div>
+    <div class="view-toggle">
+      <button class="vtbtn active" id="deskBtn" onclick="setView('desktop')">Desktop</button>
+      <button class="vtbtn" id="mobBtn" onclick="setView('mobile')">Mobile</button>
+    </div>
+  </div>
+
+  <div class="wf-body">
+    <!-- Sidebar navigation -->
+    <div class="wf-sidebar">
+      <div class="wf-sidebar-group">
+        <h3>Pages</h3>
+        <ul class="wf-snav">
+          <li class="active" onclick="showScreen('home')">Home Page</li>
+          <li onclick="showScreen('ebooks')">E-Books</li>
+          <li onclick="showScreen('events')">Digital Events</li>
+          <li onclick="showScreen('special')">Special Books</li>
+          <li onclick="showScreen('services')">Services</li>
+        </ul>
+      </div>
+      <div class="wf-sidebar-group">
+        <h3>Auth</h3>
+        <ul class="wf-snav">
+          <li onclick="showScreen('auth')">Login / Sign Up</li>
+        </ul>
+      </div>
+      <div class="wf-sidebar-group">
+        <h3>Dashboards</h3>
+        <ul class="wf-snav">
+          <li onclick="showScreen('admin')">Admin</li>
+          <li onclick="showScreen('staff')">Staff</li>
+          <li onclick="showScreen('user')">User</li>
+        </ul>
+      </div>
+      <div class="wf-sidebar-group">
+        <h3>Forms</h3>
+        <ul class="wf-snav">
+          <li onclick="showScreen('forms')">All Forms</li>
+          <li onclick="showScreen('help')">Help / Contact</li>
+        </ul>
+      </div>
+      <div class="wf-sidebar-group">
+        <h3>Export</h3>
+        <ul class="wf-snav">
+          <li onclick="showScreen('figma')">Figma JSON</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div class="wf-canvas" id="wfCanvas">
+      <!-- Content injected here -->
+    </div>
+  </div>
+</div>
+
+<script>
+let currentView = 'desktop';
+
+const NAV_BAR = `
+<div class="wf-header">
+  <div class="wf-logo">BU E-LIBRARY</div>
+  <div class="wf-nav">
+    <span class="active-nav">Home</span>
+    <span>E-Books</span>
+    <span>Digital Events</span>
+    <span>Services</span>
+    <span>Special Books</span>
+    <span>Help</span>
+  </div>
+  <div class="wf-nav">
+    <span>Login</span>
+    <span class="wf-nav-btn">Sign Up</span>
+  </div>
+</div>`;
+
+const MOB_NAV = `
+<div class="mob-header">
+  <div class="wf-logo" style="font-size:9px">BU E-LIBRARY</div>
+  <div class="mob-menu-icon">☰</div>
+</div>`;
+
+const MOB_BOTTOM = `
+<div class="mob-nav-bottom">
+  <span>Home</span><span>Books</span><span>Events</span><span>Account</span><span>Help</span>
+</div>`;
+
+const FOOTER = `
+<div class="wf-footer">
+  <div class="wf-footer-grid">
+    <div>
+      <h5>BU E-Library</h5>
+      <p>A digital resource hub for Bugema University students, staff and faculty.</p>
+    </div>
+    <div>
+      <h5>Quick Links</h5>
+      <a>E-Books</a><a>Digital Events</a><a>Services</a><a>Special Books</a><a>Help</a>
+    </div>
+    <div>
+      <h5>Services</h5>
+      <a>Printing Services</a><a>Research Support</a><a>Book Requests</a><a>Event Registration</a>
+    </div>
+    <div>
+      <h5>Contact</h5>
+      <p>📍 Bugema University, Kampala</p>
+      <p>✉ library@bu.ac.ug</p>
+      <p>📞 +256 xxx xxx xxx</p>
+    </div>
+  </div>
+  <div class="wf-footer-bottom">
+    <span>© 2025 Bugema University E-Library</span>
+    <span>Privacy Policy · Terms of Use · Accessibility</span>
+  </div>
+</div>`;
+
+const screens = {
+  home: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 HOME PAGE — Desktop Wireframe <span class="flow-note">↓ Scroll for full layout</span></div>
+<div class="wf-screen">
+  ${NAV_BAR}
+  <!-- Hero -->
+  <div class="wf-hero">
+    <span class="wf-annotation" style="top:6px;right:8px">ANNOTATION: Search is primary CTA. Auto-suggest enabled.</span>
+    <div class="wf-hero-title">Explore the BU Digital Library</div>
+    <div class="wf-hero-sub">Access e-books, research resources, digital events and more</div>
+    <div class="wf-searchbar">
+      <input placeholder="Search by title, author, ISBN, subject…" readonly>
+      <button>SEARCH</button>
+    </div>
+    <div style="font-size:9px;color:#888;margin-top:8px">Popular: Academic Research · Engineering · Theology · Medicine · Law</div>
+    <div style="height:60px;background:#ddd;margin-top:14px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#888">[HERO IMAGE PLACEHOLDER — Library or campus illustration]</div>
+  </div>
+  <!-- Featured Books -->
+  <div class="wf-section">
+    <div class="wf-section-label">Featured Books</div>
+    <div class="book-grid">
+      ${[1,2,3,4].map(i=>`
+      <div class="book-card">
+        <div class="book-thumb">[COVER ${i}]</div>
+        <div class="book-title">Book Title ${i}</div>
+        <div class="book-author">Author Name</div>
+        <button class="book-btn filled">View Book</button>
+      </div>`).join('')}
+    </div>
+    <div style="text-align:right;margin-top:10px"><button class="wf-btn sm">Browse All E-Books →</button></div>
+  </div>
+  <!-- Announcements -->
+  <div class="wf-section">
+    <div class="wf-section-label">Announcements & Digital Events</div>
+    <div class="wf-3col">
+      ${[1,2,3].map(i=>`
+      <div class="event-card">
+        <div class="event-type">WEBINAR</div>
+        <h4 style="font-size:10px;font-weight:700;margin-bottom:3px">Digital Event Title ${i}</h4>
+        <div class="event-date">📅 Jan ${10+i}, 2025 · 10:00 AM</div>
+        <p style="font-size:8px;color:#666;margin:4px 0">Short description of the event. Open to all students and staff.</p>
+        <button class="wf-btn sm">Register</button>
+      </div>`).join('')}
+    </div>
+    <div style="text-align:right;margin-top:8px"><button class="wf-btn sm">View All Events →</button></div>
+  </div>
+  <!-- Why Choose Us -->
+  <div class="wf-section">
+    <div class="wf-section-label">Why Choose Us</div>
+    <div class="wf-4col">
+      ${['24/7 Access','1000+ E-Books','Expert Research Support','Secure & Private'].map((t,i)=>`
+      <div class="wf-card">
+        <div style="width:32px;height:32px;border:1.5px solid #222;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:6px">${['📚','🔍','🎓','🔒'][i]}</div>
+        <h4>${t}</h4>
+        <p>Brief benefit description supporting this feature.</p>
+      </div>`).join('')}
+    </div>
+  </div>
+  ${FOOTER}
+</div>`,
+
+  ebooks: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 E-BOOKS PAGE <span class="flow-note">→ Click "Request a Book" opens form modal</span></div>
+<div class="wf-screen">
+  ${NAV_BAR}
+  <div class="wf-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:700">E-Books Catalogue</div>
+      <button class="wf-btn filled sm">+ Request a Book</button>
+    </div>
+    <div class="wf-2col" style="align-items:start">
+      <!-- Filter panel -->
+      <div style="grid-column:1;max-width:200px">
+        <div class="filter-panel">
+          <h4>Filter & Search</h4>
+          <div class="wf-input-group">
+            <label>Title</label>
+            <input class="wf-input" placeholder="Search title…" readonly>
+          </div>
+          <div class="wf-input-group">
+            <label>Author</label>
+            <input class="wf-input" placeholder="Search author…" readonly>
+          </div>
+          <div class="wf-input-group">
+            <label>Category</label>
+            <select class="wf-select"><option>All Categories</option><option>Science</option><option>Theology</option><option>Engineering</option></select>
+          </div>
+          <div class="wf-input-group">
+            <label>Availability</label>
+            <select class="wf-select"><option>All</option><option>Available</option><option>Request Only</option></select>
+          </div>
+          <button class="wf-btn filled" style="width:100%">Apply Filters</button>
+          <div style="margin-top:6px"><button class="wf-btn" style="width:100%;margin-top:4px">Clear</button></div>
+        </div>
+      </div>
+      <!-- Book listing -->
+      <div>
+        <div style="font-size:9px;color:#888;margin-bottom:8px">Showing 1–12 of 342 results</div>
+        <div class="book-grid">
+          ${[1,2,3,4,5,6,7,8].map(i=>`
+          <div class="book-card">
+            <div class="book-thumb">[IMG]</div>
+            <div class="book-badge" style="font-size:7px;border:1px solid #ccc;padding:1px 4px;margin-bottom:3px;display:inline-block">${['PDF','EPUB','PDF','EPUB'][i%4]}</div>
+            <div class="book-title">Book Title ${i}</div>
+            <div class="book-author">Author ${i}</div>
+            <div style="font-size:8px;color:#888;margin-bottom:4px">Category: Engineering</div>
+            <button class="book-btn filled" style="width:100%">Read / Download</button>
+          </div>`).join('')}
+        </div>
+        <!-- Pagination -->
+        <div style="display:flex;gap:4px;justify-content:center;margin-top:12px">
+          ${[1,2,3,'...',28].map(p=>`<button class="wf-btn sm">${p}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Request Book Modal hint -->
+  <div style="margin:10px 16px 0;border:1.5px dashed #bbb;padding:10px;background:#fffde7">
+    <div style="font-size:9px;color:#888">📌 FLOW NOTE: "Request a Book" button opens the Request Form (see Forms section). Admin is notified on submission.</div>
+  </div>
+  ${FOOTER}
+</div>`,
+
+  events: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 DIGITAL EVENTS PAGE <span class="flow-note">→ Register opens Event Registration Form</span></div>
+<div class="wf-screen">
+  ${NAV_BAR}
+  <div class="wf-section">
+    <div style="font-size:13px;font-weight:700;margin-bottom:4px">Digital Events</div>
+    <div style="font-size:9px;color:#888;margin-bottom:12px">Webinars, workshops, and digital literacy events hosted by BU Library</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <select class="wf-select" style="width:auto">
+        <option>All Types</option><option>Webinar</option><option>Workshop</option><option>Seminar</option>
+      </select>
+      <input class="wf-input" style="width:220px" placeholder="Search events…" readonly>
+      <input class="wf-input" style="width:140px" placeholder="Date range…" readonly>
+    </div>
+    <div class="wf-3col">
+      ${['Research Writing Workshop','Library Orientation Webinar','Digital Literacy Seminar','Thesis Support Session','Academic Publishing Talk','Open Access Forum'].map((t,i)=>`
+      <div class="event-card">
+        <div style="background:#e8e8e0;height:80px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#888;margin-bottom:8px;border:1px solid #ccc">[EVENT BANNER]</div>
+        <div class="event-type">${['WEBINAR','WORKSHOP','SEMINAR'][i%3]}</div>
+        <h4 style="font-size:10px;font-weight:700;margin:4px 0">${t}</h4>
+        <div class="event-date">📅 Feb ${5+i}, 2025 · 2:00 PM</div>
+        <p style="font-size:8px;color:#666;margin:4px 0 6px;line-height:1.5">Short event description. Venue: Virtual / Main Library Hall.</p>
+        <div style="display:flex;gap:6px">
+          <button class="wf-btn filled sm">Register</button>
+          <button class="wf-btn sm">Details</button>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <!-- Printing Services -->
+  <div class="wf-section">
+    <div class="wf-section-label">Printing Services</div>
+    <div class="wf-2col">
+      <div class="wf-card">
+        <h4>Printing & Scanning</h4>
+        <p>Submit print jobs digitally. Supported formats: PDF, DOCX. Max 50 pages per request.</p>
+        <div style="margin-top:8px"><button class="wf-btn sm filled">Submit Print Request</button></div>
+      </div>
+      <div class="wf-card">
+        <h4>Binding Services</h4>
+        <p>Thesis and project report binding. Drop off or request collection from library.</p>
+        <div style="margin-top:8px"><button class="wf-btn sm filled">Request Binding</button></div>
+      </div>
+    </div>
+  </div>
+  <!-- Research Support -->
+  <div class="wf-section">
+    <div class="wf-section-label">Research Support</div>
+    <div class="wf-2col">
+      <div class="wf-card">
+        <h4>Research Consultation</h4>
+        <p>Book a one-on-one session with a research librarian. Topics: literature review, citation, databases.</p>
+        <div style="margin-top:8px"><button class="wf-btn sm filled">Book Session</button></div>
+      </div>
+      <div class="wf-card">
+        <h4>Database Access Help</h4>
+        <p>Guided access to JSTOR, PubMed, Scopus and other academic databases.</p>
+        <div style="margin-top:8px"><button class="wf-btn sm filled">Submit Request</button></div>
+      </div>
+    </div>
+  </div>
+  ${FOOTER}
+</div>`,
+
+  special: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 SPECIAL BOOKS PAGE — Staff Picks</div>
+<div class="wf-screen">
+  ${NAV_BAR}
+  <div class="wf-section">
+    <div style="font-size:13px;font-weight:700;margin-bottom:4px">Special Books — Staff Picks</div>
+    <div style="font-size:9px;color:#888;margin-bottom:12px">Hand-selected titles recommended by BU Library staff for academic excellence</div>
+    <!-- Featured highlight -->
+    <div style="border:1.5px solid #222;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:120px 1fr;gap:14px">
+      <div style="background:#e0e0d8;height:160px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#888">[FEATURED COVER]</div>
+      <div>
+        <div style="font-size:8px;border:1px solid #222;display:inline-block;padding:1px 8px;margin-bottom:6px">STAFF PICK OF THE MONTH</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">Featured Book Title Here</div>
+        <div style="font-size:9px;color:#666;margin-bottom:6px">Author Name · Category: Academic Research</div>
+        <div style="font-size:9px;line-height:1.6;color:#444;margin-bottom:10px">Extended description of why this book was selected. Notable for its contribution to the field…</div>
+        <div style="display:flex;gap:8px">
+          <button class="wf-btn filled sm">Read Now</button>
+          <button class="wf-btn sm">Add to List</button>
+        </div>
+      </div>
+    </div>
+    <!-- Staff picks grid -->
+    <div style="font-size:10px;font-weight:700;margin-bottom:8px">More Staff Picks</div>
+    <div class="book-grid">
+      ${[1,2,3,4,5,6,7,8].map(i=>`
+      <div class="book-card">
+        <div style="font-size:7px;background:#222;color:#fff;padding:2px 5px;margin-bottom:5px;display:inline-block">STAFF PICK</div>
+        <div class="book-thumb">[COVER]</div>
+        <div class="book-title">Special Title ${i}</div>
+        <div class="book-author">Staff: ${['Dr. Okello','Prof. Nalule','Ms. Kyobe','Mr. Ssemwogerere'][i%4]}</div>
+        <div style="font-size:7px;color:#888;margin-bottom:4px">"Recommended for its insight…"</div>
+        <button class="book-btn filled">Read</button>
+      </div>`).join('')}
+    </div>
+  </div>
+  <!-- Event registration tie-in -->
+  <div class="wf-section">
+    <div class="wf-section-label">Related Events</div>
+    <div class="wf-3col">
+      ${[1,2,3].map(i=>`
+      <div class="event-card">
+        <div class="event-type">BOOK CLUB</div>
+        <h4 style="font-size:10px;font-weight:700;margin:4px 0">Book Discussion Session ${i}</h4>
+        <div class="event-date">📅 March ${i*5}, 2025</div>
+        <p style="font-size:8px;color:#666;margin:4px 0">Join the discussion for this staff pick title.</p>
+        <button class="wf-btn sm filled">Register</button>
+      </div>`).join('')}
+    </div>
+  </div>
+  ${FOOTER}
+</div>`,
+
+  services: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 SERVICES PAGE</div>
+<div class="wf-screen">
+  ${NAV_BAR}
+  <div class="wf-section">
+    <div style="font-size:13px;font-weight:700;margin-bottom:4px">Library Services</div>
+    <div style="font-size:9px;color:#888;margin-bottom:14px">Everything you need to support your academic journey at Bugema University</div>
+    <div class="wf-3col">
+      ${[
+        {t:'E-Book Access',d:'Browse and download from 1,000+ academic titles across all disciplines.',icon:'📚'},
+        {t:'Research Support',d:'One-on-one consultation with research librarians for literature review and citations.',icon:'🔬'},
+        {t:'Printing Services',d:'Print, scan and bind documents. Submit requests online and collect at the library.',icon:'🖨️'},
+        {t:'Digital Events',d:'Access webinars, workshops and training sessions curated by BU Library staff.',icon:'🎓'},
+        {t:'Inter-Library Loans',d:'Request books not available in our catalogue from partner institutions.',icon:'🔄'},
+        {t:'Study Room Booking',d:'Reserve quiet study rooms for individual or group study sessions.',icon:'🏛️'}
+      ].map(s=>`
+      <div class="wf-card">
+        <div style="font-size:20px;margin-bottom:6px">${s.icon}</div>
+        <h4>${s.t}</h4>
+        <p>${s.d}</p>
+        <div style="margin-top:8px"><button class="wf-btn sm">Learn More</button></div>
+      </div>`).join('')}
+    </div>
+    <div style="background:#f0f0ea;border:1.5px solid #222;padding:16px;margin-top:16px;text-align:center">
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Ready to get started?</div>
+      <div style="font-size:9px;color:#666;margin-bottom:10px">Create a free account to access all library services and resources</div>
+      <button class="wf-btn filled">Sign Up — It's Free</button>
+      <span style="font-size:9px;color:#888;margin-left:10px">Already have an account? <span style="text-decoration:underline;cursor:pointer">Login</span></span>
+    </div>
+  </div>
+  ${FOOTER}
+</div>`,
+
+  auth: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 AUTHENTICATION — Login & Sign Up <span class="flow-note">→ After login: redirect to User Dashboard</span></div>
+<div class="wf-2col" style="gap:16px">
+  <!-- Login -->
+  <div class="wf-screen">
+    ${NAV_BAR}
+    <div style="max-width:380px;margin:30px auto;padding:0 16px 30px">
+      <div style="text-align:center;margin-bottom:16px">
+        <div class="wf-logo" style="display:inline-block;margin-bottom:6px">BU E-LIBRARY</div>
+        <div style="font-size:13px;font-weight:700">Sign in to your account</div>
+        <div style="font-size:9px;color:#888;margin-top:2px">Access your books, events and requests</div>
+      </div>
+      <div class="wf-input-group">
+        <label>Email Address</label>
+        <input class="wf-input" placeholder="you@bugema.ac.ug" readonly>
+      </div>
+      <div class="wf-input-group">
+        <label>Password</label>
+        <input class="wf-input" placeholder="••••••••" readonly>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:10px">
+        <label style="display:flex;align-items:center;gap:4px"><input type="checkbox" readonly> Remember me</label>
+        <span style="text-decoration:underline;cursor:pointer">Forgot password?</span>
+      </div>
+      <button class="wf-btn filled" style="width:100%">Login</button>
+      <div class="wf-divider">or</div>
+      <button class="wf-google-btn">[G] Continue with Google</button>
+      <div style="text-align:center;font-size:9px;margin-top:12px;color:#666">Don't have an account? <span style="text-decoration:underline;cursor:pointer;color:#111">Sign Up</span></div>
+    </div>
+  </div>
+  <!-- Sign Up -->
+  <div class="wf-screen">
+    ${NAV_BAR}
+    <div style="max-width:380px;margin:30px auto;padding:0 16px 30px">
+      <div style="text-align:center;margin-bottom:16px">
+        <div class="wf-logo" style="display:inline-block;margin-bottom:6px">BU E-LIBRARY</div>
+        <div style="font-size:13px;font-weight:700">Create your account</div>
+        <div style="font-size:9px;color:#888;margin-top:2px">Join the BU digital library community</div>
+      </div>
+      ${[['Full Name','Enter your full name'],['Email Address','student@bugema.ac.ug'],['Username','Choose a username'],['Password','Min. 8 characters'],['Confirm Password','Repeat password']].map(([l,p])=>`
+      <div class="wf-input-group">
+        <label>${l}</label>
+        <input class="wf-input" placeholder="${p}" readonly>
+      </div>`).join('')}
+      <div class="wf-input-group">
+        <label>Role</label>
+        <select class="wf-select"><option>Student</option><option>Staff</option><option>Faculty</option></select>
+      </div>
+      <div style="font-size:9px;color:#666;margin-bottom:10px;display:flex;gap:4px;align-items:flex-start">
+        <input type="checkbox" style="margin-top:1px" readonly>
+        <span>I agree to the <span style="text-decoration:underline">Terms of Service</span> and <span style="text-decoration:underline">Privacy Policy</span></span>
+      </div>
+      <button class="wf-btn filled" style="width:100%">Create Account</button>
+      <div class="wf-divider">or</div>
+      <button class="wf-google-btn">[G] Sign up with Google</button>
+      <div style="text-align:center;font-size:9px;margin-top:12px;color:#666">Already have an account? <span style="text-decoration:underline;cursor:pointer;color:#111">Login</span></div>
+    </div>
+  </div>
+</div>`,
+
+  admin: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 ADMIN DASHBOARD <span class="flow-note">→ Full system management panel</span></div>
+<div class="wf-screen">
+  <div style="background:#111;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between">
+    <div class="wf-logo" style="color:#fff;border-color:#555">BU E-LIBRARY ADMIN</div>
+    <div style="font-size:9px;color:#888">Admin: John Mukasa · <span style="text-decoration:underline;cursor:pointer">Logout</span></div>
+  </div>
+  <div class="dash-layout">
+    <div class="dash-sidebar">
+      <h3>Navigation</h3>
+      <ul class="dash-nav">
+        <li class="active">Dashboard</li>
+        <li>Manage Users</li>
+        <li>Manage Books</li>
+        <li>Manage Events</li>
+        <li>Book Requests</li>
+        <li>Print Requests</li>
+        <li>Research Req.</li>
+        <li>Reports</li>
+        <li>Settings</li>
+      </ul>
+    </div>
+    <div class="dash-main">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px">Overview Dashboard</div>
+      <div class="dash-stat-row">
+        ${[['1,240','Total Users'],['342','E-Books'],['18','Active Events'],['56','Pending Requests']].map(([n,l])=>`
+        <div class="stat-card"><div class="stat-num">${n}</div><div class="stat-label">${l}</div></div>`).join('')}
+      </div>
+      <!-- Recent requests table -->
+      <div style="font-size:10px;font-weight:700;margin-bottom:6px">Recent Book Requests</div>
+      <table class="wf-table">
+        <thead><tr><th>#</th><th>User</th><th>Book Title</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[['001','Alice Nampijja','Advanced Calculus','Jan 10, 2025','Pending'],['002','Brian Otim','Clinical Nutrition','Jan 09, 2025','Approved'],['003','Carol Nabirye','Theology & Ethics','Jan 08, 2025','Rejected']].map(([id,u,b,d,s])=>`
+          <tr><td>${id}</td><td>${u}</td><td>${b}</td><td>${d}</td><td><span style="border:1px solid #222;padding:1px 5px;font-size:8px">${s}</span></td><td class="td-actions"><button class="ta-btn">View</button><button class="ta-btn">Edit</button></td></tr>`).join('')}
+        </tbody>
+      </table>
+      <!-- Recent users table -->
+      <div style="font-size:10px;font-weight:700;margin:12px 0 6px">Recent Registrations</div>
+      <table class="wf-table">
+        <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[['U01','Alice N.','alice@bu.ac.ug','Student','Jan 12'],['U02','Brian O.','brian@bu.ac.ug','Staff','Jan 11']].map(([id,n,e,r,d])=>`
+          <tr><td>${id}</td><td>${n}</td><td>${e}</td><td>${r}</td><td>${d}</td><td class="td-actions"><button class="ta-btn">View</button><button class="ta-btn">Deactivate</button></td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>`,
+
+  staff: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 STAFF DASHBOARD</div>
+<div class="wf-screen">
+  <div style="background:#111;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between">
+    <div class="wf-logo" style="color:#fff;border-color:#555">BU E-LIBRARY — STAFF</div>
+    <div style="font-size:9px;color:#888">Staff: Mary Nakato · <span style="text-decoration:underline;cursor:pointer">Logout</span></div>
+  </div>
+  <div class="dash-layout">
+    <div class="dash-sidebar">
+      <h3>Staff Menu</h3>
+      <ul class="dash-nav">
+        <li class="active">Overview</li>
+        <li>My Events</li>
+        <li>Manage Books</li>
+        <li>Print Requests</li>
+        <li>Research Req.</li>
+        <li>Staff Picks</li>
+        <li>Profile</li>
+      </ul>
+    </div>
+    <div class="dash-main">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px">Staff Overview</div>
+      <div class="dash-stat-row" style="grid-template-columns:repeat(3,1fr)">
+        ${[['4','My Events'],['12','Print Queue'],['7','Research Requests']].map(([n,l])=>`
+        <div class="stat-card"><div class="stat-num">${n}</div><div class="stat-label">${l}</div></div>`).join('')}
+      </div>
+      <div style="font-size:10px;font-weight:700;margin-bottom:6px">Upcoming Events I Manage</div>
+      <table class="wf-table">
+        <thead><tr><th>Event</th><th>Date</th><th>Type</th><th>Registrations</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[['Research Writing Workshop','Feb 3, 2025','Workshop','24/30'],['Library Orientation','Feb 10, 2025','Webinar','45/50']].map(([e,d,t,r])=>`
+          <tr><td>${e}</td><td>${d}</td><td>${t}</td><td>${r}</td><td class="td-actions"><button class="ta-btn">Edit</button><button class="ta-btn">Attendees</button></td></tr>`).join('')}
+        </tbody>
+      </table>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="wf-btn filled sm">+ Add New Event</button>
+        <button class="wf-btn sm">+ Add Staff Pick</button>
+      </div>
+    </div>
+  </div>
+</div>`,
+
+  user: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 USER DASHBOARD</div>
+<div class="wf-screen">
+  ${NAV_BAR}
+  <div class="dash-layout">
+    <div class="dash-sidebar" style="background:#f0f0ea;border-right:1.5px solid #222">
+      <h3 style="color:#888">My Account</h3>
+      <ul class="dash-nav" style="background:transparent">
+        <li class="active" style="color:#111;border-left-color:#111">My Books</li>
+        <li style="color:#555">My Requests</li>
+        <li style="color:#555">Registered Events</li>
+        <li style="color:#555">Saved Books</li>
+        <li style="color:#555">Profile Settings</li>
+        <li style="color:#555">Help</li>
+      </ul>
+    </div>
+    <div class="dash-main">
+      <!-- Profile summary -->
+      <div style="display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee;padding-bottom:12px;margin-bottom:12px">
+        <div style="width:44px;height:44px;border:1.5px solid #222;background:#e0e0d8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">AN</div>
+        <div>
+          <div style="font-size:12px;font-weight:700">Alice Nampijja</div>
+          <div style="font-size:9px;color:#888">Student · alice@bugema.ac.ug</div>
+        </div>
+        <button class="wf-btn sm" style="margin-left:auto">Edit Profile</button>
+      </div>
+      <div class="dash-stat-row" style="grid-template-columns:repeat(3,1fr)">
+        ${[['3','Active Requests'],['5','Registered Events'],['12','Saved Books']].map(([n,l])=>`
+        <div class="stat-card"><div class="stat-num">${n}</div><div class="stat-label">${l}</div></div>`).join('')}
+      </div>
+      <div style="font-size:10px;font-weight:700;margin-bottom:6px">My Book Requests</div>
+      <table class="wf-table">
+        <thead><tr><th>Book Title</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[['Advanced Calculus','Jan 10, 2025','Pending'],['Clinical Nutrition','Jan 05, 2025','Approved']].map(([b,d,s])=>`
+          <tr><td>${b}</td><td>${d}</td><td><span style="border:1px solid #222;padding:1px 5px;font-size:8px">${s}</span></td><td><button class="ta-btn">View</button></td></tr>`).join('')}
+        </tbody>
+      </table>
+      <div style="font-size:10px;font-weight:700;margin:12px 0 6px">My Registered Events</div>
+      <table class="wf-table">
+        <thead><tr><th>Event</th><th>Date</th><th>Type</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[['Research Writing Workshop','Feb 3, 2025','Workshop'],['Library Orientation','Feb 10, 2025','Webinar']].map(([e,d,t])=>`
+          <tr><td>${e}</td><td>${d}</td><td>${t}</td><td><button class="ta-btn">Cancel</button></td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>`,
+
+  forms: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 ALL FORMS — Wireframe Reference</div>
+<div class="wf-3col" style="gap:12px">
+
+  <!-- Request a Book -->
+  <div class="wf-screen">
+    <div style="background:#222;color:#fff;padding:8px 12px;font-size:10px;font-weight:700">FORM: Request a Book</div>
+    <div style="padding:14px">
+      ${[['Book Title','Full title of the book'],['Author','Author name (if known)'],['ISBN / DOI','Optional identifier']].map(([l,p])=>`
+      <div class="wf-input-group"><label>${l}</label><input class="wf-input" placeholder="${p}" readonly></div>`).join('')}
+      <div class="wf-input-group"><label>Category</label><select class="wf-select"><option>Select category</option></select></div>
+      <div class="wf-input-group"><label>Reason for Request</label><textarea class="wf-input" style="height:60px;resize:none" readonly placeholder="Why do you need this book?"></textarea></div>
+      <button class="wf-btn filled" style="width:100%">Submit Request</button>
+    </div>
+  </div>
+
+  <!-- Event Registration -->
+  <div class="wf-screen">
+    <div style="background:#222;color:#fff;padding:8px 12px;font-size:10px;font-weight:700">FORM: Event Registration</div>
+    <div style="padding:14px">
+      <div style="background:#f0f0ea;border:1px solid #ddd;padding:8px;margin-bottom:10px;font-size:9px">
+        <div style="font-weight:700">Research Writing Workshop</div>
+        <div style="color:#666">Feb 3, 2025 · 2:00 PM · Virtual</div>
+      </div>
+      ${[['Full Name','Your name'],['Email','Your email'],['Student/Staff ID','ID number']].map(([l,p])=>`
+      <div class="wf-input-group"><label>${l}</label><input class="wf-input" placeholder="${p}" readonly></div>`).join('')}
+      <div class="wf-input-group"><label>Department / Faculty</label><select class="wf-select"><option>Select department</option></select></div>
+      <div style="font-size:9px;color:#666;margin-bottom:10px">Seats remaining: 6 of 30</div>
+      <button class="wf-btn filled" style="width:100%">Confirm Registration</button>
+    </div>
+  </div>
+
+  <!-- Printing Services -->
+  <div class="wf-screen">
+    <div style="background:#222;color:#fff;padding:8px 12px;font-size:10px;font-weight:700">FORM: Printing Services Request</div>
+    <div style="padding:14px">
+      ${[['Document Name','Title or description'],['Number of Copies','e.g. 2']].map(([l,p])=>`
+      <div class="wf-input-group"><label>${l}</label><input class="wf-input" placeholder="${p}" readonly></div>`).join('')}
+      <div class="wf-input-group"><label>Print Type</label><select class="wf-select"><option>Black & White</option><option>Colour</option></select></div>
+      <div class="wf-input-group"><label>Paper Size</label><select class="wf-select"><option>A4</option><option>A3</option></select></div>
+      <div class="wf-input-group"><label>Binding Required?</label><select class="wf-select"><option>No</option><option>Spiral Binding</option><option>Hard Cover</option></select></div>
+      <div class="wf-input-group"><label>Upload File</label><div style="border:1.5px dashed #999;padding:14px;text-align:center;font-size:9px;color:#888">[Upload PDF / DOCX — max 20MB]</div></div>
+      <button class="wf-btn filled" style="width:100%">Submit Print Request</button>
+    </div>
+  </div>
+
+  <!-- Research Support -->
+  <div class="wf-screen">
+    <div style="background:#222;color:#fff;padding:8px 12px;font-size:10px;font-weight:700">FORM: Research Support Request</div>
+    <div style="padding:14px">
+      ${[['Your Name','Full name'],['Research Topic','Brief topic title'],['Research Stage','e.g. Proposal, Data Collection']].map(([l,p])=>`
+      <div class="wf-input-group"><label>${l}</label><input class="wf-input" placeholder="${p}" readonly></div>`).join('')}
+      <div class="wf-input-group"><label>Support Needed</label><select class="wf-select"><option>Literature Review</option><option>Citation Help</option><option>Database Access</option><option>Methodology</option></select></div>
+      <div class="wf-input-group"><label>Preferred Date</label><input class="wf-input" type="date" readonly></div>
+      <div class="wf-input-group"><label>Additional Notes</label><textarea class="wf-input" style="height:50px;resize:none" readonly placeholder="Any specific requirements…"></textarea></div>
+      <button class="wf-btn filled" style="width:100%">Book Consultation</button>
+    </div>
+  </div>
+
+  <!-- Sign Up Services -->
+  <div class="wf-screen">
+    <div style="background:#222;color:#fff;padding:8px 12px;font-size:10px;font-weight:700">FORM: Sign Up for Library Services</div>
+    <div style="padding:14px">
+      ${[['Full Name',''],['Email',''],['Phone Number',''],['Student/Staff ID','']].map(([l])=>`
+      <div class="wf-input-group"><label>${l}</label><input class="wf-input" readonly></div>`).join('')}
+      <div class="wf-input-group"><label>Services Interested In</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:9px">
+          ${['E-Books','Printing','Research Support','Events','Study Rooms','Inter-Library Loans'].map(s=>`<label style="display:flex;gap:4px;align-items:center"><input type="checkbox" readonly> ${s}</label>`).join('')}
+        </div>
+      </div>
+      <button class="wf-btn filled" style="width:100%">Sign Up for Services</button>
+    </div>
+  </div>
+
+</div>`,
+
+  help: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 HELP / CONTACT PAGE</div>
+<div class="wf-screen">
+  ${NAV_BAR}
+  <div class="wf-section">
+    <div style="font-size:13px;font-weight:700;margin-bottom:4px">Help & Support</div>
+    <div style="font-size:9px;color:#888;margin-bottom:14px">Find answers or contact the BU Library team</div>
+    <div class="wf-2col">
+      <!-- Submit Ticket -->
+      <div>
+        <div style="font-size:11px;font-weight:700;margin-bottom:8px">Submit a Support Ticket</div>
+        <div class="ticket-box">
+          <div class="wf-input-group"><label>Full Name</label><input class="wf-input" placeholder="Your name" readonly></div>
+          <div class="wf-input-group"><label>Email</label><input class="wf-input" placeholder="your@email.com" readonly></div>
+          <div class="wf-input-group"><label>Issue Category</label>
+            <select class="wf-select"><option>Account Access</option><option>E-Book Issue</option><option>Event Registration</option><option>Technical Problem</option><option>Other</option></select>
+          </div>
+          <div class="wf-input-group"><label>Subject</label><input class="wf-input" placeholder="Brief summary of issue" readonly></div>
+          <div class="wf-input-group"><label>Description</label><textarea class="wf-input" style="height:80px;resize:none" readonly placeholder="Describe your issue in detail…"></textarea></div>
+          <div class="wf-input-group"><label>Attachment (optional)</label>
+            <div style="border:1.5px dashed #999;padding:10px;text-align:center;font-size:9px;color:#888">[Drag & drop or click to upload screenshot]</div>
+          </div>
+          <button class="wf-btn filled" style="width:100%">Submit Ticket</button>
+          <div style="font-size:8px;color:#888;margin-top:6px;text-align:center">Expected response time: 24–48 hours</div>
+        </div>
+      </div>
+      <!-- FAQs -->
+      <div>
+        <div style="font-size:11px;font-weight:700;margin-bottom:8px">Frequently Asked Questions</div>
+        ${[
+          ['How do I access e-books?','Log in to your account, go to E-Books, and click "Read" or "Download" on any available title.'],
+          ['How do I request a book not in the catalogue?','Go to E-Books page and click "Request a Book". Fill the form and submit.'],
+          ['How do I register for an event?','Visit the Digital Events page and click "Register" on the event you wish to attend.'],
+          ['How long does a book request take?','Requests are reviewed within 3–5 working days. You will be notified by email.'],
+          ['Can I access the library off campus?','Yes — log in to BU E-Library from any device with your university credentials.'],
+          ['How do I cancel an event registration?','Go to your User Dashboard → Registered Events and click "Cancel".']
+        ].map(([q,a])=>`
+        <details class="faq-item">
+          <summary>${q}</summary>
+          <p style="font-size:9px;color:#666;margin-top:6px;line-height:1.6">${a}</p>
+        </details>`).join('')}
+        <div style="border:1.5px solid #222;padding:12px;margin-top:12px;text-align:center">
+          <div style="font-size:10px;font-weight:700;margin-bottom:4px">Still need help?</div>
+          <div style="font-size:9px;color:#666;margin-bottom:8px">Contact us directly</div>
+          <div style="font-size:9px;color:#444">📧 library@bu.ac.ug</div>
+          <div style="font-size:9px;color:#444">📞 +256 xxx xxx xxx</div>
+          <div style="font-size:9px;color:#444">🕐 Mon–Fri, 8:00 AM – 6:00 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  ${FOOTER}
+</div>`,
+
+  figma: () => {
+    const json = {
+      "figma_ready_layout": {
+        "project": "BU E-Library",
+        "version": "1.0.0",
+        "design_tokens": {
+          "colors": {"background":"#F5F5F0","surface":"#FFFFFF","border":"#222222","text_primary":"#111111","text_muted":"#555555","light_bg":"#E8E8E0"},
+          "typography": {"font_family":"monospace / system-ui","sizes":{"hero":16,"section_title":13,"body":10,"label":9,"micro":8}},
+          "spacing": {"xs":4,"sm":8,"md":14,"lg":20,"xl":30},
+          "border_radius": 3
+        },
+        "pages": [
+          {"name":"Home","components":["Header/Nav","Hero+SearchBar","FeaturedBooks(4-grid)","EventsPreview(3-col)","WhyChooseUs(4-col)","Footer"]},
+          {"name":"E-Books","components":["Header/Nav","FilterPanel(left)","BookGrid(8-col)","Pagination","Footer"]},
+          {"name":"Digital Events","components":["Header/Nav","EventFilter","EventCards(3-col)","PrintingServices(2-col)","ResearchSupport(2-col)","Footer"]},
+          {"name":"Special Books","components":["Header/Nav","FeaturedHero","StaffPicksGrid","RelatedEvents","Footer"]},
+          {"name":"Services","components":["Header/Nav","ServicesGrid(3-col)","CTA-Banner","Footer"]},
+          {"name":"Login","components":["Header/Nav","LoginForm","GoogleOAuth","Footer"]},
+          {"name":"Sign Up","components":["Header/Nav","SignUpForm","GoogleOAuth","Footer"]},
+          {"name":"Admin Dashboard","components":["AdminTopBar","Sidebar(9-items)","StatCards(4)","RequestsTable","UsersTable"]},
+          {"name":"Staff Dashboard","components":["StaffTopBar","Sidebar(7-items)","StatCards(3)","EventsTable","ActionButtons"]},
+          {"name":"User Dashboard","components":["Header/Nav","ProfileSidebar","ProfileSummary","StatCards(3)","RequestsTable","EventsTable"]},
+          {"name":"Forms","components":["RequestBook","EventRegistration","PrintingRequest","ResearchSupport","ServiceSignUp","SubmitTicket"]},
+          {"name":"Help","components":["Header/Nav","TicketForm","FAQAccordion","ContactInfo","Footer"]}
+        ],
+        "component_specs": {
+          "book_card": {"width":160,"height":180,"children":["image(80px)","badge","title","author","cta-button"]},
+          "event_card": {"width":"1/3","height":"auto","children":["banner(80px)","type-badge","title","date","description","register-btn"]},
+          "stat_card": {"width":"1/4","height":80,"children":["number(24px 700)","label(8px uppercase)"]},
+          "data_table": {"columns":["id","user","title","date","status","actions"],"row_height":32},
+          "form_input": {"height":36,"border":"1.5px solid #222","padding":"7px 10px"},
+          "primary_btn": {"padding":"6px 14px","background":"#222","color":"#fff","font_size":10},
+          "outline_btn": {"padding":"6px 14px","border":"1.5px solid #222","background":"transparent","font_size":10}
+        },
+        "navigation_flow": {
+          "Home": ["E-Books","Events","Special Books","Services","Login","Sign Up","Help"],
+          "Login": ["User Dashboard","Admin Dashboard","Staff Dashboard"],
+          "Sign Up": ["User Dashboard","Services Sign Up Form"],
+          "E-Books": ["Book Detail","Request Book Form"],
+          "Events": ["Event Registration Form","Printing Request Form","Research Support Form"],
+          "User Dashboard": ["My Requests","Registered Events","Profile Settings"],
+          "Admin Dashboard": ["Manage Users","Manage Books","Manage Events","All Requests","Reports"]
+        }
+      }
+    };
+    return `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📄 FIGMA-READY JSON EXPORT</div>
+<div style="margin-bottom:8px;display:flex;gap:8px">
+  <button class="wf-btn sm filled" onclick="copyFigma()">Copy JSON to Clipboard</button>
+  <span style="font-size:9px;color:#888;align-self:center">Paste this into Figma's plugin panel or a Figma import tool</span>
+</div>
+<div class="figma-panel"><pre id="figmaJson">${JSON.stringify(json,null,2)}</pre></div>
+<div style="margin-top:12px;border:1.5px solid #222;padding:12px">
+  <div style="font-size:10px;font-weight:700;margin-bottom:8px">How to use in Figma</div>
+  <ol style="font-size:9px;color:#555;line-height:2;padding-left:16px">
+    <li>Copy the JSON above using the "Copy" button</li>
+    <li>In Figma: open a file → Plugins → "Figma Tokens" or "Design Tokens" plugin</li>
+    <li>Paste the design_tokens section to auto-populate your token library</li>
+    <li>Use the pages[] array as your page/frame structure guide</li>
+    <li>Use component_specs for Auto Layout frame sizing and typography</li>
+    <li>Use navigation_flow to create Prototype connections between frames</li>
+  </ol>
+</div>`;
+  }
+};
+
+// Mobile versions
+const mobileScreens = {
+  home: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📱 HOME PAGE — Mobile (375px)</div>
+<div class="mobile-frame">
+  <div class="wf-screen mobile">
+    ${MOB_NAV}
+    <div class="wf-hero" style="padding:16px 12px">
+      <div style="font-size:12px;font-weight:700;margin-bottom:4px">BU Digital Library</div>
+      <div style="font-size:8px;color:#666;margin-bottom:10px">Search thousands of e-books & resources</div>
+      <div class="wf-searchbar">
+        <input placeholder="Search books…" style="font-size:9px" readonly>
+        <button style="font-size:9px;padding:6px 10px">GO</button>
+      </div>
+    </div>
+    <div class="wf-section">
+      <div class="wf-section-label">Featured Books</div>
+      <div class="mob-book-grid">
+        ${[1,2,3,4].map(i=>`
+        <div class="book-card">
+          <div class="book-thumb" style="height:60px">[IMG ${i}]</div>
+          <div class="book-title" style="font-size:8px">Book Title ${i}</div>
+          <button class="book-btn filled" style="font-size:7px;width:100%">View</button>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="wf-section">
+      <div class="wf-section-label">Upcoming Events</div>
+      ${[1,2].map(i=>`
+      <div class="event-card" style="margin-bottom:8px">
+        <div class="event-type">WEBINAR</div>
+        <div style="font-size:9px;font-weight:700;margin:3px 0">Event Title ${i}</div>
+        <div style="font-size:8px;color:#888">📅 Feb ${i*5}, 2025</div>
+        <button class="wf-btn sm filled" style="margin-top:6px">Register</button>
+      </div>`).join('')}
+    </div>
+    ${MOB_BOTTOM}
+  </div>
+</div>`,
+
+  ebooks: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📱 E-BOOKS — Mobile</div>
+<div class="mobile-frame">
+  <div class="wf-screen mobile">
+    ${MOB_NAV}
+    <div style="padding:10px 12px;border-bottom:1px solid #eee">
+      <div class="wf-searchbar"><input placeholder="Search books…" style="font-size:9px" readonly><button style="font-size:9px;padding:6px 8px">🔍</button></div>
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <select class="wf-select" style="font-size:9px;padding:4px 6px">
+          <option>Category</option><option>Science</option><option>Engineering</option>
+        </select>
+        <select class="wf-select" style="font-size:9px;padding:4px 6px"><option>Availability</option></select>
+        <button class="wf-btn sm filled">+ Request</button>
+      </div>
+    </div>
+    <div style="padding:10px 12px">
+      <div style="font-size:8px;color:#888;margin-bottom:8px">Showing 1–6 of 342 results</div>
+      <div class="mob-book-grid">
+        ${[1,2,3,4,5,6].map(i=>`
+        <div class="book-card">
+          <div class="book-thumb" style="height:65px">[IMG]</div>
+          <div class="book-title" style="font-size:8px">Book Title ${i}</div>
+          <div style="font-size:7px;color:#888">Author ${i}</div>
+          <button class="book-btn filled" style="font-size:7px;width:100%;margin-top:4px">Read</button>
+        </div>`).join('')}
+      </div>
+    </div>
+    ${MOB_BOTTOM}
+  </div>
+</div>`,
+
+  auth: () => `
+<div style="font-size:10px;color:#888;margin-bottom:10px">📱 LOGIN / SIGN UP — Mobile</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<div class="mobile-frame">
+  <div class="wf-screen mobile">
+    ${MOB_NAV}
+    <div style="padding:20px 16px">
+      <div style="text-align:center;margin-bottom:14px">
+        <div style="font-weight:700;font-size:11px">Sign in</div>
+        <div style="font-size:8px;color:#888">Access your BU E-Library account</div>
+      </div>
+      <div class="wf-input-group"><label>Email</label><input class="wf-input" style="font-size:9px" placeholder="email@bugema.ac.ug" readonly></div>
+      <div class="wf-input-group"><label>Password</label><input class="wf-input" style="font-size:9px" placeholder="••••••••" readonly></div>
+      <button class="wf-btn filled" style="width:100%;margin-top:6px">Login</button>
+      <div class="wf-divider" style="font-size:8px">or</div>
+      <button class="wf-google-btn" style="font-size:9px">[G] Continue with Google</button>
+      <div style="text-align:center;font-size:8px;margin-top:10px;color:#666">No account? <span style="text-decoration:underline">Sign Up</span></div>
+    </div>
+    ${MOB_BOTTOM}
+  </div>
+</div>
+<div class="mobile-frame">
+  <div class="wf-screen mobile">
+    ${MOB_NAV}
+    <div style="padding:16px">
+      <div style="text-align:center;margin-bottom:12px"><div style="font-weight:700;font-size:11px">Create Account</div></div>
+      ${['Full Name','Email','Username','Password','Confirm Password'].map(l=>`
+      <div class="wf-input-group"><label style="font-size:8px">${l}</label><input class="wf-input" style="font-size:9px;padding:5px 8px" readonly></div>`).join('')}
+      <button class="wf-btn filled" style="width:100%;margin-top:4px">Sign Up</button>
+    </div>
+    ${MOB_BOTTOM}
+  </div>
+</div>
+</div>`
+};
+
+function showScreen(name) {
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  const matched = [...document.querySelectorAll('.stab')].find(t => t.getAttribute('onclick') === `showScreen('${name}')`);
+  if (matched) matched.classList.add('active');
+  document.querySelectorAll('.wf-snav li').forEach(li => li.classList.remove('active'));
+
+  const canvas = document.getElementById('wfCanvas');
+  let content;
+  if (currentView === 'mobile' && mobileScreens[name]) {
+    canvas.classList.add('mobile-view');
+    content = mobileScreens[name]();
+  } else {
+    canvas.classList.remove('mobile-view');
+    content = screens[name] ? screens[name]() : `<div style="padding:20px;color:#888;font-size:10px">Screen "${name}" not available in this view.</div>`;
+  }
+  canvas.innerHTML = content;
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('deskBtn').classList.toggle('active', v === 'desktop');
+  document.getElementById('mobBtn').classList.toggle('active', v === 'mobile');
+  // Re-render current screen
+  const active = document.querySelector('.stab.active');
+  if (active) active.click();
+}
+
+function copyFigma() {
+  const text = document.getElementById('figmaJson').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy JSON to Clipboard', 2000);
+  });
+}
+
+// Init
+showScreen('home');
+</script>

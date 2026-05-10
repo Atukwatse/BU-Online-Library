@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Manage Journals | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container split-grid admin-layout">
+        <div class="auth-card">
+            <span class="eyebrow">Upload Journals and Articles</span>
+            <h1>Manage journals</h1>
+            <form method="post" class="form-grid">
+                {{ form.hidden_tag() }}
+                <label>{{ form.title.label }}{{ form.title() }}</label>
+                <label>{{ form.description.label }}{{ form.description(rows=5) }}</label>
+                <label>{{ form.cover_image.label }}{{ form.cover_image() }}</label>
+                {{ form.submit(class_='button') }}
+            </form>
+        </div>
+        <div>
+            <h2>Existing journals</h2>
+            <div class="stack-list">
+                {% for journal in journals %}
+                    <article class="stack-card">
+                        <h3>{{ journal.title }}</h3>
+                        <p>{{ journal.description }}</p>
+                        <form method="post" action="{{ url_for('admin.delete_journal', journal_id=journal.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="button danger small" type="submit">Delete Journal</button>
+                        </form>
+                        <form method="post" action="{{ url_for('admin.add_article', journal_id=journal.id) }}" class="form-grid compact-form">
+                            {{ article_form.csrf_token }}
+                            <label>{{ article_form.title.label }}{{ article_form.title() }}</label>
+                            <label>{{ article_form.author.label }}{{ article_form.author() }}</label>
+                            <label>{{ article_form.summary.label }}{{ article_form.summary(rows=4) }}</label>
+                            <label>{{ article_form.file_path.label }}{{ article_form.file_path() }}</label>
+                            {{ article_form.submit(class_='button small') }}
+                        </form>
+                        {% if journal.articles %}
+                            <div class="stack-list">
+                                {% for article in journal.articles %}
+                                    <article class="stack-card">
+                                        <h4>{{ article.title }}</h4>
+                                        <p>{{ article.author }}</p>
+                                        <form method="post" action="{{ url_for('admin.delete_article', article_id=article.id) }}">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button class="button danger small" type="submit">Delete Article</button>
+                                        </form>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

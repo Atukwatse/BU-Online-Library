@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Journals | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="page-hero page-hero-journals">
+    <div class="container">
+        <span class="eyebrow">Journals</span>
+        <h1>Journal list and article collections</h1>
+        <p>Read journal descriptions and open article details with download options.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container card-grid">
+        {% for journal in journals %}
+            <article class="card">
+                <img src="{{ url_for('static', filename=journal.cover_image or 'images/research.png') }}" alt="{{ journal.title }}">
+                <div class="card-body">
+                    <h3>{{ journal.title }}</h3>
+                    <p>{{ journal.description }}</p>
+                    <a class="button secondary" href="{{ url_for('library.journal_detail', journal_id=journal.id) }}">View Journal</a>
+                </div>
+            </article>
+        {% else %}
+            <p>No journals have been uploaded yet.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

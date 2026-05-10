@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }} | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container narrow">
+        <span class="eyebrow">Article Details</span>
+        <h1>{{ article.title }}</h1>
+        <p><strong>Author:</strong> {{ article.author }}</p>
+        <p><strong>Summary:</strong> {{ article.summary }}</p>
+        <p><strong>Journal:</strong> {{ article.journal.title }}</p>
+        <a class="button" href="{{ url_for('library.journal_detail', journal_id=article.journal.id) }}">Back to Journal</a>
+    </div>
+</section>
+{% endblock %}

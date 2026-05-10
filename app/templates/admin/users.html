@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Manage Users | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">Manage users</span>
+        <h1>User directory</h1>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.role }}</td>
+                            <td>{{ user.created_at.strftime('%d %b %Y') }}</td>
+                            <td>
+                                {% if current_user.id != user.id %}
+                                    <form method="post" action="{{ url_for('admin.delete_user', user_id=user.id) }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button class="button danger small" type="submit">Delete</button>
+                                    </form>
+                                {% else %}
+                                    Current admin
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

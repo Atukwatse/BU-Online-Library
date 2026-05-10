@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Help / Contact | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container split-grid">
+        <div>
+            <span class="eyebrow">Help / Contact</span>
+            <h1>Get in touch with the library</h1>
+            <p>Send your question or request through the form and the library team can follow up using the contact details you provide.</p>
+            <div class="stack-card">
+                <p><strong>Email:</strong> library@bugema.ac.ug</p>
+                <p><strong>Phone:</strong> +256 700 000 000</p>
+            </div>
+            <div class="stack-card">
+                <h3>Frequently Asked Questions</h3>
+                <p><strong>How do I borrow a book?</strong> Sign in, open a book detail page, and click Borrow Book.</p>
+                <p><strong>Can I download resources?</strong> Yes, signed-in users can save download activity from book detail pages.</p>
+            </div>
+        </div>
+        <div class="auth-card">
+            <h2>Contact form</h2>
+            <form method="post" class="form-grid">
+                {{ form.hidden_tag() }}
+                <label>
+                    {{ form.name.label }}
+                    {{ form.name() }}
+                </label>
+                <label>
+                    {{ form.email.label }}
+                    {{ form.email() }}
+                </label>
+                <label>
+                    {{ form.message.label }}
+                    {{ form.message(rows=6) }}
+                </label>
+                {{ form.submit(class_='button') }}
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

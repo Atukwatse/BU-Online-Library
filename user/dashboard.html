@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Bugema E-Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            min-height: 100vh;
+        }
+        .sidebar {
+            background: #16a34a;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .sidebar:hover {
+            width: 280px;
+        }
+        .main-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            border-color: #16a34a;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid #16a34a;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container flex">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar w-64 min-h-screen p-4 fixed left-0 top-0 z-10">
+            <div class="mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-green-400 rounded-full flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold">Student Portal</h2>
+                        <p class="text-sm text-green-200">Digital Library Access</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="#dashboard" class="flex items-center space-x-3 p-3 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors">
+                    <i class="fas fa-tachometer-alt w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#books" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-600 transition-colors">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Browse Books</span>
+                </a>
+                <a href="#my-downloads" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-600 transition-colors">
+                    <i class="fas fa-download w-5"></i>
+                    <span>My Downloads</span>
+                </a>
+                <a href="#profile" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-600 transition-colors">
+                    <i class="fas fa-user w-5"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="#search" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-600 transition-colors">
+                    <i class="fas fa-search w-5"></i>
+                    <span>Search</span>
+                </a>
+                <a href="../index.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-600 transition-colors">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Back to Library</span>
+                </a>
+            </nav>
+
+            <!-- User Info -->
+            <div class="absolute bottom-4 left-4 right-4">
+                <div class="bg-green-800 rounded-lg p-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold" id="studentName">Student User</p>
+                            <p class="text-xs text-green-200">Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content flex-1 ml-64 p-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Student Dashboard</h1>
+                        <p class="text-gray-600">Access your digital library and learning resources</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="searchInput"
+                                placeholder="Search books..." 
+                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                            >
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                            <i class="fas fa-filter mr-2"></i>Filter
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Welcome Section -->
+            <section class="mb-8">
+                <div class="bg-gradient-to-r from-green-50 to-blue-50 p-8 rounded-xl">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-book-open text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Welcome to Your Library!</h2>
+                            <p class="text-gray-600">Explore thousands of digital books and resources available for your studies.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics Cards -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Reading Stats</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="stat-card p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Books Downloaded</p>
+                                <p class="text-2xl font-bold text-gray-800" id="downloadCount">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-download text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Recent Downloads</p>
+                                <p class="text-2xl font-bold text-gray-800" id="recentDownloads">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Favorite Category</p>
+                                <p class="text-2xl font-bold text-gray-800" id="favoriteCategory">All</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-heart text-purple-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Reading Streak</p>
+                                <p class="text-2xl font-bold text-gray-800" id="readingStreak">0 days</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-fire text-orange-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Books -->
+            <section class="mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Featured Books</h2>
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                        <i class="fas fa-th mr-2"></i>View All
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="featuredBooks">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Categories -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Browse by Category</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="categoriesList">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Recent Downloads -->
+            <section class="mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Your Recent Downloads</h2>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-history mr-2"></i>View All
+                    </button>
+                </div>
+                <div class="space-y-4" id="recentDownloadsList">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <button class="p-6 bg-green-50 border-2 border-green-200 rounded-xl hover:bg-green-100 transition-colors">
+                        <i class="fas fa-search text-green-600 text-2xl mb-3"></i>
+                        <h3 class="font-semibold text-green-800">Search Books</h3>
+                        <p class="text-green-600 text-sm">Find your next read</p>
+                    </button>
+                    <button class="p-6 bg-blue-50 border-2 border-blue-200 rounded-xl hover:bg-blue-100 transition-colors">
+                        <i class="fas fa-download text-blue-600 text-2xl mb-3"></i>
+                        <h3 class="font-semibold text-blue-800">Download History</h3>
+                        <p class="text-blue-600 text-sm">View your downloads</p>
+                    </button>
+                    <button class="p-6 bg-purple-50 border-2 border-purple-200 rounded-xl hover:bg-purple-100 transition-colors">
+                        <i class="fas fa-user text-purple-600 text-2xl mb-3"></i>
+                        <h3 class="font-semibold text-purple-800">My Profile</h3>
+                        <p class="text-purple-600 text-sm">Manage your account</p>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // Check authentication and load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadDashboardData();
+        });
+
+        // Check if user is authenticated as student
+        async function checkAuthentication() {
+            const token = localStorage.getItem('elibrary_token');
+            const user = JSON.parse(localStorage.getItem('elibrary_user') || '{}');
+
+            if (!token || !user || user.role !== 'Student') {
+                // Redirect to login if not authenticated or not student
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Update student name display
+            document.getElementById('studentName').textContent = user.fullName || 'Student User';
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load dashboard data
+                const response = await fetch(`${API_BASE_URL}/auth/dashboard-data`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('elibrary_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    updateDashboardUI(data.data);
+                } else {
+                    console.error('Failed to load dashboard data:', data);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Update dashboard UI with data
+        function updateDashboardUI(dashboardData) {
+            // Update statistics
+            document.getElementById('downloadCount').textContent = dashboardData.stats.downloadCount || 0;
+            document.getElementById('recentDownloads').textContent = dashboardData.stats.recentDownloads || 0;
+            document.getElementById('favoriteCategory').textContent = dashboardData.stats.favoriteCategory || 'All';
+            document.getElementById('readingStreak').textContent = `${dashboardData.stats.readingStreak || 0} days`;
+
+            // Update featured books
+            const featuredBooksContainer = document.getElementById('featuredBooks');
+            if (dashboardData.recommendations && dashboardData.recommendations.popularBooks) {
+                featuredBooksContainer.innerHTML = dashboardData.recommendations.popularBooks
+                    .slice(0, 8)
+                    .map(book => `
+                        <div class="book-card p-4 cursor-pointer" onclick="downloadBook('${book.bookID}', '${book.title}')">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-20 bg-gray-200 rounded flex items-center justify-center mb-3">
+                                    <i class="fas fa-book text-gray-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-800 text-center">${book.title}</h4>
+                                <p class="text-sm text-gray-600 text-center">${book.author}</p>
+                                <p class="text-xs text-gray-500 text-center">${book.category || 'Uncategorized'}</p>
+                                <div class="flex items-center justify-center mt-2">
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Available</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+            }
+
+            // Update categories
+            const categoriesContainer = document.getElementById('categoriesList');
+            if (dashboardData.recommendations && dashboardData.recommendations.categories) {
+                categoriesContainer.innerHTML = dashboardData.recommendations.categories
+                    .slice(0, 8)
+                    .map(category => `
+                        <div class="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="browseCategory('${category}')">
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-tag text-blue-600"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-800">${category}</h4>
+                                <p class="text-sm text-gray-600">Category</p>
+                            </div>
+                        </div>
+                    `).join('');
+            }
+
+            // Update recent downloads
+            const recentDownloadsContainer = document.getElementById('recentDownloadsList');
+            if (dashboardData.recommendations && dashboardData.recommendations.myDownloads) {
+                recentDownloadsContainer.innerHTML = dashboardData.recommendations.myDownloads
+                    .slice(0, 5)
+                    .map(download => `
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-download text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">${download.title}</h4>
+                                    <p class="text-sm text-gray-600">Downloaded on ${new Date(download.downloadDate).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors text-sm">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    `).join('');
+            }
+        }
+
+        // Handle navigation clicks
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                if (href.startsWith('#')) {
+                    // Handle internal navigation
+                    console.log('Navigate to:', href);
+                } else {
+                    // Handle external navigation
+                    window.location.href = href;
+                }
+            });
+        });
+
+        // Handle search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = this.value.trim();
+                if (searchTerm) {
+                    searchBooks(searchTerm);
+                }
+            }
+        });
+
+        // Handle quick action buttons
+        document.querySelectorAll('section button').forEach(button => {
+            button.addEventListener('click', function() {
+                const buttonText = this.querySelector('h3').textContent;
+                console.log('Quick action clicked:', buttonText);
+                
+                // Here you would typically open modals or navigate to specific pages
+                if (buttonText === 'Search Books') {
+                    document.getElementById('searchInput').focus();
+                } else if (buttonText === 'Download History') {
+                    viewAllDownloads();
+                } else if (buttonText === 'My Profile') {
+                    viewProfile();
+                }
+            });
+        });
+
+        // Download book function
+        async function downloadBook(bookId, bookTitle) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/books/${bookId}/download`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('elibrary_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    alert(`Download started: ${bookTitle}`);
+                    // You could also show a success message in the UI
+                    loadDashboardData(); // Refresh data
+                } else {
+                    alert(`Download failed: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Download failed. Please try again.');
+            }
+        }
+
+        // Browse category function
+        function browseCategory(category) {
+            console.log('Browsing category:', category);
+            // Here you would typically navigate to a category page or filter the current view
+        }
+
+        // Search books function
+        async function searchBooks(searchTerm) {
+            console.log('Searching for:', searchTerm);
+            // Implement search functionality
+            try {
+                const response = await fetch(`${API_BASE_URL}/books?search=${encodeURIComponent(searchTerm)}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('elibrary_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('Search results:', data);
+                // Here you would update the UI with search results
+            } catch (error) {
+                console.error('Search error:', error);
+            }
+        }
+
+        // View all downloads function
+        function viewAllDownloads() {
+            console.log('Viewing all downloads');
+            // Navigate to downloads page or show modal
+        }
+
+        // View profile function
+        function viewProfile() {
+            console.log('Viewing profile');
+            // Navigate to profile page or show modal
+        }
+
+        // Auto-refresh data every 30 seconds
+        setInterval(loadDashboardData, 30000);
+    </script>
+</body>
+</html>

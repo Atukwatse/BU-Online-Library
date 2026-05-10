@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Login | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container auth-shell">
+        <div class="auth-card">
+            <span class="eyebrow">User Account</span>
+            <h1>Login to continue</h1>
+            <form method="post" class="form-grid">
+                {{ form.hidden_tag() }}
+                <label>
+                    {{ form.email.label }}
+                    {{ form.email() }}
+                </label>
+                <label>
+                    {{ form.password.label }}
+                    {{ form.password() }}
+                </label>
+                {{ form.submit(class_='button') }}
+            </form>
+            <a class="button secondary full-width" href="{{ url_for('auth.google_auth') }}">Continue with Google</a>
+            <p class="helper-text">Admin demo: admin@bugema.ac.ug / Admin@123</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Bugema E-Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+        }
+        .sidebar {
+            background: #1a1a1a;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .sidebar:hover {
+            width: 280px;
+        }
+        .main-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid #003366;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container flex">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar w-64 min-h-screen p-4 fixed left-0 top-0 z-10">
+            <div class="mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-shield text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold">Admin Panel</h2>
+                        <p class="text-sm text-gray-400">Full System Access</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="#dashboard" class="flex items-center space-x-3 p-3 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors">
+                    <i class="fas fa-tachometer-alt w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#users" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-users w-5"></i>
+                    <span>User Management</span>
+                </a>
+                <a href="#books" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Book Management</span>
+                </a>
+                <a href="#categories" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-tags w-5"></i>
+                    <span>Categories</span>
+                </a>
+                <a href="#downloads" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-download w-5"></i>
+                    <span>Downloads</span>
+                </a>
+                <a href="#reports" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-chart-bar w-5"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#settings" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-cog w-5"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="../index.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Back to Library</span>
+                </a>
+            </nav>
+
+            <!-- User Info -->
+            <div class="absolute bottom-4 left-4 right-4">
+                <div class="bg-gray-800 rounded-lg p-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold" id="adminName">Admin User</p>
+                            <p class="text-xs text-gray-400">Administrator</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content flex-1 ml-64 p-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+                        <p class="text-gray-600">Complete system management and oversight</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Add User
+                        </button>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                            <i class="fas fa-sync mr-2"></i>Refresh Data
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Statistics Cards -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">System Overview</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="stat-card p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Total Users</p>
+                                <p class="text-2xl font-bold text-gray-800" id="totalUsers">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-users text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Total Books</p>
+                                <p class="text-2xl font-bold text-gray-800" id="totalBooks">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-book text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Total Downloads</p>
+                                <p class="text-2xl font-bold text-gray-800" id="totalDownloads">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-download text-purple-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Active Sessions</p>
+                                <p class="text-2xl font-bold text-gray-800" id="activeSessions">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-signal text-orange-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Recent Activity</h2>
+                <div class="chart-container shadow-lg">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4">Recent Users</h3>
+                            <div class="space-y-3" id="recentUsers">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4">Recent Downloads</h3>
+                            <div class="space-y-3" id="recentDownloads">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <button class="p-6 bg-red-50 border-2 border-red-200 rounded-xl hover:bg-red-100 transition-colors">
+                        <i class="fas fa-user-plus text-red-600 text-2xl mb-3"></i>
+                        <h3 class="font-semibold text-red-800">Create User</h3>
+                        <p class="text-red-600 text-sm">Add new system users</p>
+                    </button>
+                    <button class="p-6 bg-blue-50 border-2 border-blue-200 rounded-xl hover:bg-blue-100 transition-colors">
+                        <i class="fas fa-upload text-blue-600 text-2xl mb-3"></i>
+                        <h3 class="font-semibold text-blue-800">Upload Book</h3>
+                        <p class="text-blue-600 text-sm">Add new books to library</p>
+                    </button>
+                    <button class="p-6 bg-green-50 border-2 border-green-200 rounded-xl hover:bg-green-100 transition-colors">
+                        <i class="fas fa-chart-line text-green-600 text-2xl mb-3"></i>
+                        <h3 class="font-semibold text-green-800">View Reports</h3>
+                        <p class="text-green-600 text-sm">System analytics</p>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // Check authentication and load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadDashboardData();
+        });
+
+        // Check if user is authenticated as admin
+        async function checkAuthentication() {
+            const token = localStorage.getItem('elibrary_token');
+            const user = JSON.parse(localStorage.getItem('elibrary_user') || '{}');
+
+            if (!token || !user || user.role !== 'Admin') {
+                // Redirect to login if not authenticated or not admin
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Update admin name display
+            document.getElementById('adminName').textContent = user.fullName || 'Admin User';
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load dashboard data
+                const response = await fetch(`${API_BASE_URL}/auth/dashboard-data`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('elibrary_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    updateDashboardUI(data.data);
+                } else {
+                    console.error('Failed to load dashboard data:', data);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Update dashboard UI with data
+        function updateDashboardUI(dashboardData) {
+            // Update statistics
+            document.getElementById('totalUsers').textContent = dashboardData.stats.totalUsers || 0;
+            document.getElementById('totalBooks').textContent = dashboardData.stats.totalBooks || 0;
+            document.getElementById('totalDownloads').textContent = dashboardData.stats.totalDownloads || 0;
+            document.getElementById('activeSessions').textContent = dashboardData.stats.activeUsers || 0;
+
+            // Update recent users
+            const recentUsersContainer = document.getElementById('recentUsers');
+            if (dashboardData.recentActivity && dashboardData.recentActivity.users) {
+                recentUsersContainer.innerHTML = dashboardData.recentActivity.users
+                    .slice(0, 5)
+                    .map(user => `
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">${user.fullName}</p>
+                                <p class="text-sm text-gray-600">${user.email}</p>
+                                <p class="text-xs text-gray-500">${new Date(user.dateRegistered).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                    `).join('');
+            }
+
+            // Update recent downloads
+            const recentDownloadsContainer = document.getElementById('recentDownloads');
+            if (dashboardData.recentActivity && dashboardData.recentActivity.downloads) {
+                recentDownloadsContainer.innerHTML = dashboardData.recentActivity.downloads
+                    .slice(0, 5)
+                    .map(download => `
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-download text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">${download.bookTitle}</p>
+                                <p class="text-sm text-gray-600">${download.userName}</p>
+                                <p class="text-xs text-gray-500">${new Date(download.downloadDate).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                    `).join('');
+            }
+        }
+
+        // Handle navigation clicks
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                if (href.startsWith('#')) {
+                    // Handle internal navigation
+                    console.log('Navigate to:', href);
+                } else {
+                    // Handle external navigation
+                    window.location.href = href;
+                }
+            });
+        });
+
+        // Handle quick action buttons
+        document.querySelectorAll('section button').forEach(button => {
+            button.addEventListener('click', function() {
+                const buttonText = this.querySelector('h3').textContent;
+                console.log('Quick action clicked:', buttonText);
+                
+                // Here you would typically open modals or navigate to specific pages
+                // For demo purposes, we'll just log the action
+            });
+        });
+
+        // Auto-refresh data every 30 seconds
+        setInterval(loadDashboardData, 30000);
+    </script>
+</body>
+</html>

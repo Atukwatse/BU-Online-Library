@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Manage Books | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container split-grid admin-layout">
+        <div class="auth-card">
+            <span class="eyebrow">Add / Edit / Delete Books</span>
+            <h1>{{ "Edit book" if book_to_edit else "Manage books" }}</h1>
+            <form method="post" class="form-grid">
+                {{ form.hidden_tag() }}
+                <label>{{ form.title.label }}{{ form.title() }}</label>
+                <label>{{ form.author.label }}{{ form.author() }}</label>
+                <label>{{ form.category.label }}{{ form.category() }}</label>
+                <label>{{ form.description.label }}{{ form.description(rows=5) }}</label>
+                <label>{{ form.file_path.label }}{{ form.file_path() }}</label>
+                <label>{{ form.cover_image.label }}{{ form.cover_image() }}</label>
+                <label>{{ form.availability.label }}{{ form.availability() }}</label>
+                <label>{{ form.featured.label }}{{ form.featured() }}</label>
+                {{ form.submit(class_='button') }}
+            </form>
+        </div>
+        <div>
+            <h2>Existing books</h2>
+            <div class="stack-list">
+                {% for book in books %}
+                    <article class="stack-card">
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.author }} - {{ book.category }} - {{ book.availability }}</p>
+                        <div class="hero-actions">
+                            <a class="button secondary small" href="{{ url_for('admin.books', edit=book.id) }}">Edit</a>
+                            <form method="post" action="{{ url_for('admin.delete_book', book_id=book.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="button danger small" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

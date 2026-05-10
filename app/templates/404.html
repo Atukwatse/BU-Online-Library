@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}404 | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container empty-state">
+        <img src="{{ url_for('static', filename='images/error.png') }}" alt="Page not found">
+        <h1>Page not found</h1>
+        <p>The page you requested could not be found. Use the navigation above to continue browsing the library.</p>
+        <a class="button" href="{{ url_for('main.home') }}">Return Home</a>
+    </div>
+</section>
+{% endblock %}

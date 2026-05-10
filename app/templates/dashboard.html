@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">Dashboard</span>
+        <h1>Your library account overview</h1>
+        <div class="stats-grid">
+            <div class="stat-card"><strong>{{ borrowed_books|length }}</strong><span>Borrowed Books</span></div>
+            <div class="stat-card"><strong>{{ download_history|length }}</strong><span>Download History</span></div>
+            <div class="stat-card"><strong>{{ recommendations|length }}</strong><span>Recommendations</span></div>
+        </div>
+
+        <div class="split-grid">
+            <div>
+                <h2>Borrowed Books</h2>
+                <div class="stack-list">
+                    {% for item in borrowed_books %}
+                        <article class="stack-card">
+                            <h3>{{ item.book.title }}</h3>
+                            <p>{{ item.book.author }}</p>
+                            <small>Borrowed on {{ item.date_borrowed.strftime('%d %b %Y') }}</small>
+                        </article>
+                    {% else %}
+                        <p>You have not borrowed any books yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <h2>Download History</h2>
+                <div class="stack-list">
+                    {% for item in download_history %}
+                        <article class="stack-card">
+                            <h3>{{ item.book.title }}</h3>
+                            <p>{{ item.book.author }}</p>
+                            <small>Downloaded on {{ item.date_downloaded.strftime('%d %b %Y') }}</small>
+                        </article>
+                    {% else %}
+                        <p>Your download history is empty.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="section-heading top-gap">
+            <div>
+                <span class="eyebrow">Recommended / Popular Books</span>
+                <h2>Suggested for your next read</h2>
+            </div>
+        </div>
+        <div class="card-grid">
+            {% for book in recommendations %}
+                <article class="card">
+                    <img src="{{ url_for('static', filename=book.cover_image or 'images/library.png') }}" alt="{{ book.title }}">
+                    <div class="card-body">
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.author }}</p>
+                        <a class="text-link" href="{{ url_for('library.book_detail', book_id=book.id) }}">View details</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

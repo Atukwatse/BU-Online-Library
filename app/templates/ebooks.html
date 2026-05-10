@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}E-Books | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="page-hero page-hero-books">
+    <div class="container">
+        <span class="eyebrow">E-Books</span>
+        <h1>Browse books by category</h1>
+        <p>Explore Science, Literature, History, and other academic collections.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="filters">
+            <a class="{{ 'active' if not active_category else '' }}" href="{{ url_for('library.ebooks') }}">All</a>
+            {% for category in categories %}
+                <a class="{{ 'active' if active_category == category else '' }}" href="{{ url_for('library.ebooks', category=category) }}">{{ category }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="card-grid">
+            {% for book in books %}
+                <article class="card">
+                    <img src="{{ url_for('static', filename=book.cover_image or 'images/library.png') }}" alt="{{ book.title }}">
+                    <div class="card-body">
+                        <span class="tag">{{ book.category }}</span>
+                        <h3>{{ book.title }}</h3>
+                        <p><strong>Author:</strong> {{ book.author }}</p>
+                        <p>{{ book.description[:110] }}...</p>
+                        <p><strong>Availability:</strong> {{ book.availability }}</p>
+                        <a class="button secondary" href="{{ url_for('library.book_detail', book_id=book.id) }}">View Details</a>
+                    </div>
+                </article>
+            {% else %}
+                <p>No books found in this category yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

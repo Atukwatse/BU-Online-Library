@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Profile | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container auth-shell">
+        <div class="auth-card">
+            <span class="eyebrow">Profile management</span>
+            <h1>Update your account details</h1>
+            <form method="post" class="form-grid">
+                {{ form.hidden_tag() }}
+                <label>
+                    {{ form.name.label }}
+                    {{ form.name() }}
+                </label>
+                <label>
+                    {{ form.email.label }}
+                    {{ form.email() }}
+                </label>
+                {{ form.submit(class_='button') }}
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container detail-grid">
+        <div class="detail-media">
+            <img src="{{ url_for('static', filename=book.cover_image or 'images/library.png') }}" alt="{{ book.title }}">
+        </div>
+        <div class="detail-content">
+            <span class="tag">{{ book.category }}</span>
+            <h1>{{ book.title }}</h1>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Description:</strong> {{ book.description }}</p>
+            <p><strong>Availability:</strong> {{ book.availability }}</p>
+            <div class="hero-actions">
+                {% if current_user.is_authenticated %}
+                    <form method="post" action="{{ url_for('library.borrow_book', book_id=book.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="button" type="submit">Borrow Book</button>
+                    </form>
+                    <form method="post" action="{{ url_for('library.download_book', book_id=book.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="button secondary" type="submit">Download / Read</button>
+                    </form>
+                {% else %}
+                    <a class="button" href="{{ url_for('auth.login_page') }}">Login to Borrow</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

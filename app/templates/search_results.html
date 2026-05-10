@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Search Catalog | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">Search Catalog</span>
+        <h1>Results for your catalog search</h1>
+        <form method="get" class="search-form inline-search">
+            <label>
+                Search
+                <input type="text" name="query" value="{{ query_text }}" placeholder="Search title or author">
+            </label>
+            <label>
+                Category
+                <select name="category">
+                    <option value="">All categories</option>
+                    <option value="Science" {% if category == 'Science' %}selected{% endif %}>Science</option>
+                    <option value="Literature" {% if category == 'Literature' %}selected{% endif %}>Literature</option>
+                    <option value="History" {% if category == 'History' %}selected{% endif %}>History</option>
+                    <option value="Others" {% if category == 'Others' %}selected{% endif %}>Others</option>
+                </select>
+            </label>
+            <button class="button" type="submit">Search</button>
+        </form>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book title</th>
+                        <th>Author</th>
+                        <th>Availability</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in results %}
+                        <tr>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>{{ book.availability }}</td>
+                            <td><a class="button secondary small" href="{{ url_for('library.book_detail', book_id=book.id) }}">View Details</a></td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">No matching results were found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

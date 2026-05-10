@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bugema University E-Library{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+    <div class="site-shell">
+        <header class="site-header">
+            <div class="container nav-wrap">
+                <a class="brand" href="{{ url_for('main.home') }}">
+                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Bugema University logo">
+                    <span>Bugema University E-Library</span>
+                </a>
+                <input type="checkbox" id="menu-toggle" class="menu-toggle">
+                <label for="menu-toggle" class="menu-button">Menu</label>
+                <nav class="site-nav">
+                    <a href="{{ url_for('main.home') }}">Home</a>
+                    <div class="nav-dropdown">
+                        <a href="{{ url_for('library.ebooks') }}">E-Books</a>
+                        <div class="dropdown-panel">
+                            <a href="{{ url_for('library.ebooks', category='Science') }}">Science</a>
+                            <a href="{{ url_for('library.ebooks', category='Literature') }}">Literature</a>
+                            <a href="{{ url_for('library.ebooks', category='History') }}">History</a>
+                            <a href="{{ url_for('library.ebooks', category='Others') }}">Others</a>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('library.journals') }}">Journals</a>
+                    <a href="{{ url_for('library.search_page') }}">Search Catalog</a>
+                    <a href="{{ url_for('main.contact') }}">Help / Contact</a>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('main.dashboard') }}">My Account</a>
+                        {% if current_user.is_admin %}
+                            <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+                        {% endif %}
+                        <a class="button secondary" href="{{ url_for('auth.logout_page') }}">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.register_page') }}">Register</a>
+                        <a class="button" href="{{ url_for('auth.login_page') }}">Login</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <section class="flash-stack container">
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </section>
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="site-footer">
+            <div class="container footer-grid">
+                <div>
+                    <h3>Bugema University</h3>
+                    <p>Professional, secure, and accessible digital library services for students, staff, and researchers.</p>
+                </div>
+                <div>
+                    <h4>Quick Links</h4>
+                    <a href="{{ url_for('library.ebooks') }}">E-Books</a>
+                    <a href="{{ url_for('library.journals') }}">Journals</a>
+                    <a href="{{ url_for('library.search_page') }}">Search Catalog</a>
+                </div>
+                <div>
+                    <h4>Contact</h4>
+                    <p>Email: library@bugema.ac.ug</p>
+                    <p>Phone: +256 700 000 000</p>
+                    <a href="{{ url_for('main.contact') }}">Contact Form</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

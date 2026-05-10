@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Home | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="hero hero-home">
+    <div class="container hero-grid">
+        <div>
+            <span class="eyebrow">Welcome section</span>
+            <h1>Bugema University online knowledge hub for books, journals, and research support.</h1>
+            <p>Discover trusted academic resources, borrow books, explore journal articles, and stay informed through university library updates.</p>
+            <div class="hero-actions">
+                <a class="button" href="{{ url_for('library.ebooks') }}">Browse E-Books</a>
+                <a class="button secondary" href="{{ url_for('library.search_page') }}">Search Catalog</a>
+            </div>
+        </div>
+        <div class="hero-card">
+            <h3>Quick navigation links</h3>
+            <div class="quick-links">
+                <a href="{{ url_for('library.ebooks', category='Science') }}">Science</a>
+                <a href="{{ url_for('library.ebooks', category='Literature') }}">Literature</a>
+                <a href="{{ url_for('library.ebooks', category='History') }}">History</a>
+                <a href="{{ url_for('library.ebooks', category='Others') }}">Others</a>
+                <a href="{{ url_for('library.journals') }}">Journals</a>
+                <a href="{{ url_for('main.dashboard') if current_user.is_authenticated else url_for('auth.login_page') }}">Dashboard</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">Recommended / Popular Books</span>
+                <h2>Dynamically fetched featured resources</h2>
+            </div>
+            <a href="{{ url_for('library.ebooks') }}">View all books</a>
+        </div>
+        <div class="card-grid">
+            {% for book in featured_books %}
+                <article class="card">
+                    <img src="{{ url_for('static', filename=book.cover_image or 'images/library.png') }}" alt="{{ book.title }}">
+                    <div class="card-body">
+                        <span class="tag">{{ book.category }}</span>
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.author }}</p>
+                        <p>{{ book.description[:110] }}...</p>
+                        <a class="text-link" href="{{ url_for('library.book_detail', book_id=book.id) }}">View details</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section alt">
+    <div class="container split-grid">
+        <div>
+            <span class="eyebrow">Announcements / News</span>
+            <h2>Latest updates from the library</h2>
+            <div class="stack-list">
+                {% for item in announcements %}
+                    <article class="stack-card">
+                        <h3>{{ item.title }}</h3>
+                        <p>{{ item.content }}</p>
+                        <small>{{ item.date_posted.strftime('%d %b %Y') }}</small>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="search-panel">
+            <span class="eyebrow">Search Catalog</span>
+            <h2>Search by title, author, or category</h2>
+            <form method="get" action="{{ url_for('library.search_page') }}" class="search-form">
+                <label>
+                    Search
+                    <input type="text" name="query" placeholder="Enter title or author">
+                </label>
+                <label>
+                    Category
+                    <select name="category">
+                        <option value="">All categories</option>
+                        <option value="Science">Science</option>
+                        <option value="Literature">Literature</option>
+                        <option value="History">History</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </label>
+                <button class="button" type="submit">Search catalog</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

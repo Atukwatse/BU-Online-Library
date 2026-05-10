@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | Bugema University E-Library{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">Admin Panel</span>
+        <h1>Library administration dashboard</h1>
+        <div class="stats-grid">
+            <div class="stat-card"><strong>{{ book_count }}</strong><span>Books</span></div>
+            <div class="stat-card"><strong>{{ journal_count }}</strong><span>Journals</span></div>
+            <div class="stat-card"><strong>{{ user_count }}</strong><span>Users</span></div>
+            <div class="stat-card"><strong>{{ announcement_count }}</strong><span>Announcements</span></div>
+        </div>
+        <div class="quick-links admin-links">
+            <a href="{{ url_for('admin.books') }}">Manage Books</a>
+            <a href="{{ url_for('admin.journals') }}">Manage Journals</a>
+            <a href="{{ url_for('admin.announcements') }}">Post Announcements</a>
+            <a href="{{ url_for('admin.users') }}">Manage Users</a>
+        </div>
+        <div class="split-grid top-gap">
+            <div>
+                <h2>Recent Books</h2>
+                <div class="stack-list">
+                    {% for book in recent_books %}
+                        <article class="stack-card">
+                            <h3>{{ book.title }}</h3>
+                            <p>{{ book.author }} - {{ book.category }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <h2>Recent Announcements</h2>
+                <div class="stack-list">
+                    {% for item in recent_announcements %}
+                        <article class="stack-card">
+                            <h3>{{ item.title }}</h3>
+                            <p>{{ item.content }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

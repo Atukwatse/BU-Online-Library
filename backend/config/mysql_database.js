@@ -179,6 +179,23 @@ class MySQLDatabase {
     `);
 
     console.log('✅ MySQL Tables Ready');
+
+    // Seed Data if empty
+    const users = await this.query('SELECT COUNT(*) as total FROM Users');
+    if (users[0].total === 0) {
+      console.log('🌱 Seeding Users...');
+      await this.query('INSERT INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Admin User', 'admin@gmail.com', 'admin123', 'Admin']);
+      await this.query('INSERT INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Staff User', 'staff@bugema.ac.ug', 'staff123', 'Staff']);
+      await this.query('INSERT INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Student User', 'student@bugema.ac.ug', 'student123', 'Student']);
+    }
+
+    const books = await this.query('SELECT COUNT(*) as total FROM Books');
+    if (books[0].total === 0) {
+      console.log('🌱 Seeding Books...');
+      await this.query('INSERT INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['Introduction to Computer Science', 'John Smith', 'Technology', 'Available']);
+      await this.query('INSERT INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['Advanced Mathematics', 'Jane Doe', 'Mathematics', 'Available']);
+      await this.query('INSERT INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['Principles of Economics', 'Robert Brown', 'Economics', 'Available']);
+    }
   }
 
   // Health check

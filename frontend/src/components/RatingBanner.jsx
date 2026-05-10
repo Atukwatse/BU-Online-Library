@@ -31,7 +31,7 @@ const RatingBanner = ({ serviceName, onDone }) => {
       const headers = { 'Content-Type': 'application/json' }
       if (token) headers['Authorization'] = `Bearer ${token}`
 
-      const res = await fetch('/api/reviews', {
+      const res = await fetch('https://bu-online-library.onrender.com/api/reviews', {
         method: 'POST',
         headers,
         body: JSON.stringify({

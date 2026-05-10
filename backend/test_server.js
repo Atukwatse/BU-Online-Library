@@ -5,7 +5,6 @@ const helmet = require('helmet');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { initializeDatabase } = require('./sqlite_db.js');
 const mysqlDb = require('./config/mysql_database');
 
 const app = express();
@@ -516,6 +515,7 @@ const startApp = async () => {
       db = mysqlDb;
     } else {
       console.log('📂 Using SQLite...');
+      const { initializeDatabase } = require('./sqlite_db.js');
       db = await initializeDatabase();
       // Ensure Reviews table exists in SQLite
       await db.exec(`

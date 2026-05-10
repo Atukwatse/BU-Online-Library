@@ -3,21 +3,44 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const { initializeDatabase } = require('./sqlite_db.js');
+const mysqlDb = require('./config/mysql_database');
 
 const app = express();
+
+// ─── Database Selection ───────────────────────────────────────────────────────
 let db;
-const upload = multer({ dest: path.join(__dirname, 'uploads/') });
+const useMySQL = !!process.env.DATABASE_URL;
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+let db;
+const upload = multer({ dest: uploadsDir });
 
 // Security middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
 
-// CORS configuration — allow frontend dev server on port 3000
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:3003',
+  'http://localhost:3004',
+  'http://localhost:3005',
+  'http://127.0.0.1:3000',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://localhost:3004', 'http://localhost:3005', 'http://127.0.0.1:3000'],
+  origin: allowedOrigins,
   credentials: true,
 }));
 
@@ -461,8 +484,12 @@ app.get('/api/users/profile', (req, res) => {
 });
 
 // ─── Static files ─────────────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, '..')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// If root directory files are needed, serve them safely
+if (process.env.SERVE_ROOT === 'true') {
+  app.use(express.static(path.join(__dirname, '..')));
+}
 
 // ─── 404 handler ──────────────────────────────────────────────────────────────
 app.use('*', (req, res) => {
@@ -481,42 +508,52 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-initializeDatabase().then(async database => {
-  db = database;
+const startApp = async () => {
+  try {
+    if (useMySQL) {
+      console.log('🔗 Connecting to MySQL...');
+      await mysqlDb.connect();
+      await mysqlDb.initializeTables();
+      db = mysqlDb;
+    } else {
+      console.log('📂 Using SQLite...');
+      db = await initializeDatabase();
+      // Ensure Reviews table exists in SQLite
+      await db.exec(`
+        CREATE TABLE IF NOT EXISTS Reviews (
+          ReviewID INTEGER PRIMARY KEY AUTOINCREMENT,
+          UserName TEXT NOT NULL,
+          UserEmail TEXT,
+          Rating INTEGER NOT NULL,
+          Comment TEXT,
+          Service TEXT NOT NULL,
+          CreatedAt TEXT
+        )
+      `);
+    }
 
-  // Create Reviews table if not exists
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS Reviews (
-      ReviewID INTEGER PRIMARY KEY AUTOINCREMENT,
-      UserName TEXT NOT NULL,
-      UserEmail TEXT,
-      Rating INTEGER NOT NULL,
-      Comment TEXT,
-      Service TEXT NOT NULL,
-      CreatedAt TEXT
-    )
-  `);
+    app.listen(PORT, () => {
+      console.log('='.repeat(60));
+      console.log(`🚀 Bugema E-Library Backend Started (${useMySQL ? 'MySQL' : 'SQLite'})`);
+      console.log('='.repeat(60));
+      console.log(`🌐 Backend URL:  http://localhost:${PORT}`);
+      console.log(`❤️  Health:       http://localhost:${PORT}/api/health`);
+      console.log('='.repeat(60));
+      if (useMySQL) {
+        console.log('☁️  Database: Connected to Aiven MySQL');
+      } else {
+        console.log('💾 Database: Local SQLite file');
+      }
+      console.log('='.repeat(60));
+      console.log(`🎨 Frontend (React): http://localhost:3000`);
+      console.log('='.repeat(60));
+    });
+  } catch (err) {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
+  }
+};
 
-  app.listen(PORT, () => {
-    console.log('='.repeat(60));
-    console.log('🚀 Bugema E-Library Backend Started (SQLite)');
-    console.log('='.repeat(60));
-    console.log(`🌐 Backend URL:  http://localhost:${PORT}`);
-    console.log(`❤️  Health:       http://localhost:${PORT}/api/health`);
-    console.log(`📚 Books API:    http://localhost:${PORT}/api/books`);
-    console.log(`📅 Events API:   http://localhost:${PORT}/api/events`);
-    console.log('='.repeat(60));
-    console.log('🔐 Test Credentials:');
-    console.log('   Admin:   admin@bugema.ac.ug   / admin123');
-    console.log('   Staff:   staff@bugema.ac.ug   / staff123');
-    console.log('   Student: student@bugema.ac.ug / student123');
-    console.log('='.repeat(60));
-    console.log(`🎨 Frontend (React): http://localhost:3000`);
-    console.log('='.repeat(60));
-  });
-}).catch(err => {
-  console.error('Failed to initialize database:', err);
-  process.exit(1);
-});
+startApp();
 
 module.exports = app;

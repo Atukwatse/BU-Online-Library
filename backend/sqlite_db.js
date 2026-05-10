@@ -24,8 +24,9 @@ const MOCK_EVENTS = [
 ]
 
 async function initializeDatabase() {
+  const dbPath = process.env.DB_PATH || path.join(__dirname, 'database.sqlite');
   const db = await open({
-    filename: path.join(__dirname, 'database.sqlite'),
+    filename: dbPath,
     driver: sqlite3.Database
   })
 

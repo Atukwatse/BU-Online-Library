@@ -19,7 +19,6 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-let db;
 const upload = multer({ dest: uploadsDir });
 
 // Security middleware

@@ -1,29 +1,21 @@
-const sqlite3 = require('sqlite3').verbose()
-const { open } = require('sqlite')
 const path = require('path')
 
-const MOCK_USERS = [
-  { FullName: 'Admin User', Email: 'admin@gmail.com', Password: 'admin123', Role: 'Admin', Status: 'Active' },
-  { FullName: 'Staff User', Email: 'staff@bugema.ac.ug', Password: 'staff123', Role: 'Staff', Status: 'Active' },
-  { FullName: 'Student User', Email: 'student@bugema.ac.ug', Password: 'student123', Role: 'Student', Status: 'Active' }
-]
-
-const MOCK_BOOKS = [
-  { Title: 'Introduction to Computer Science', Author: 'John Smith', Category: 'Technology', Status: 'Available' },
-  { Title: 'Advanced Mathematics', Author: 'Jane Doe', Category: 'Mathematics', Status: 'Available' },
-  { Title: 'Principles of Economics', Author: 'Robert Brown', Category: 'Economics', Status: 'Available' },
-  { Title: 'African History & Heritage', Author: 'Grace Nakato', Category: 'History', Status: 'Available' },
-  { Title: 'Biology: Life Sciences', Author: 'Peter Opio', Category: 'Science', Status: 'Unavailable' },
-  { Title: 'Research Methods in Education', Author: 'Mary Akello', Category: 'Education', Status: 'Available' }
-]
-
-const MOCK_EVENTS = [
-  { Title: 'Research Workshop 2026', Description: 'Learn advanced research techniques', EventDate: '2026-05-20', StartTime: '09:00', EndTime: '13:00', Location: 'Main Library Hall', MaxAttendees: 100, Status: 'Active' },
-  { Title: 'Digital Library Orientation', Description: 'Introduction to e-library resources', EventDate: '2026-05-25', StartTime: '14:00', EndTime: '16:00', Location: 'Computer Lab 2', MaxAttendees: 50, Status: 'Active' },
-  { Title: 'Citation Management Seminar', Description: 'Zotero and Mendeley training session', EventDate: '2026-06-03', StartTime: '10:00', EndTime: '12:00', Location: 'Lecture Hall B', MaxAttendees: 80, Status: 'Active' }
-]
+// Only require sqlite3 when actually using SQLite (not in production with MySQL)
+let sqlite3, open;
+try {
+  if (!process.env.DATABASE_URL) {
+    sqlite3 = require('sqlite3').verbose()
+    open = require('sqlite').open
+  }
+} catch (error) {
+  console.log('⚠️  Could not load sqlite3. This is expected in production if using MySQL.');
+}
 
 async function initializeDatabase() {
+  if (!sqlite3 || !open) {
+    throw new Error('SQLite modules are not available. Please ensure you are using MySQL in this environment.')
+  }
+
   const dbPath = process.env.DB_PATH || path.join(__dirname, 'database.sqlite');
   const db = await open({
     filename: dbPath,

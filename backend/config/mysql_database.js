@@ -92,6 +92,10 @@ class MySQLDatabase {
     return { lastID: result.insertId, changes: result.affectedRows };
   }
 
+  async exec(sql) {
+    return this.query(sql);
+  }
+
   async initializeTables() {
     console.log('📦 Initializing MySQL Tables...');
     
@@ -182,19 +186,28 @@ class MySQLDatabase {
 
     // Seed Data if empty
     const users = await this.query('SELECT COUNT(*) as total FROM Users');
-    if (users[0].total === 0) {
+    if (users[0].total <= 3) { // Seed if only the 3 basic users exist or less
       console.log('🌱 Seeding Users...');
-      await this.query('INSERT INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Admin User', 'admin@gmail.com', 'admin123', 'Admin']);
-      await this.query('INSERT INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Staff User', 'staff@bugema.ac.ug', 'staff123', 'Staff']);
-      await this.query('INSERT INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Student User', 'student@bugema.ac.ug', 'student123', 'Student']);
+      await this.query('INSERT IGNORE INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Admin User', 'admin@gmail.com', 'admin123', 'Admin']);
+      await this.query('INSERT IGNORE INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Staff User', 'staff@bugema.ac.ug', 'staff123', 'Staff']);
+      await this.query('INSERT IGNORE INTO Users (FullName, Email, Password, Role) VALUES (?, ?, ?, ?)', ['Student User', 'student@bugema.ac.ug', 'student123', 'Student']);
     }
 
     const books = await this.query('SELECT COUNT(*) as total FROM Books');
-    if (books[0].total === 0) {
-      console.log('🌱 Seeding Books...');
-      await this.query('INSERT INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['Introduction to Computer Science', 'John Smith', 'Technology', 'Available']);
-      await this.query('INSERT INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['Advanced Mathematics', 'Jane Doe', 'Mathematics', 'Available']);
-      await this.query('INSERT INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['Principles of Economics', 'Robert Brown', 'Economics', 'Available']);
+    if (books[0].total <= 3) {
+      console.log('🌱 Seeding more Books...');
+      await this.query('INSERT IGNORE INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['African History & Heritage', 'Grace Nakato', 'History', 'Available']);
+      await this.query('INSERT IGNORE INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['Biology: Life Sciences', 'Peter Opio', 'Science', 'Available']);
+      await this.query('INSERT IGNORE INTO Books (Title, Author, Category, Status) VALUES (?, ?, ?, ?)', ['Research Methods', 'Mary Akello', 'Education', 'Available']);
+    }
+
+    const events = await this.query('SELECT COUNT(*) as total FROM Events');
+    if (events[0].total === 0) {
+      console.log('🌱 Seeding Events...');
+      await this.query('INSERT INTO Events (Title, Description, EventDate, StartTime, EndTime, Location, Status) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+        ['Library Orientation', 'New student introduction', '2026-05-15', '10:00', '12:00', 'Main Hall', 'Active']);
+      await this.query('INSERT INTO Events (Title, Description, EventDate, StartTime, EndTime, Location, Status) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+        ['Research Seminar', 'Advanced search techniques', '2026-05-20', '14:00', '16:00', 'Room 101', 'Active']);
     }
   }
 

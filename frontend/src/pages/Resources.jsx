@@ -27,7 +27,9 @@ const Resources = () => {
   const fetchBooks = async () => {
     try {
       const response = await booksAPI.getAll()
-      setBooks(response.data || [])
+      // The API returns { status: 'success', data: [...] }
+      const bookList = response.data?.data || response.data || []
+      setBooks(Array.isArray(bookList) ? bookList : [])
     } catch (error) {
       console.error('Error fetching books:', error)
     } finally {

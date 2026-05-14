@@ -286,14 +286,25 @@ const Resources = () => {
 
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">E-Book File URL (PDF/Drive)</label>
-                <input
-                  type="url"
-                  className="input"
-                  placeholder="https://drive.google.com/..."
-                  value={formData.FileURL || ''}
-                  onChange={e => setFormData({...formData, FileURL: e.target.value})}
-                />
-                <p className="text-[10px] text-gray-400 mt-1 italic">Students will use this to read the book online.</p>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    className="input flex-1"
+                    placeholder="https://drive.google.com/..."
+                    value={formData.FileURL || ''}
+                    onChange={e => setFormData({...formData, FileURL: e.target.value})}
+                  />
+                  {formData.FileURL && (
+                    <button 
+                      type="button"
+                      onClick={() => window.open(formData.FileURL, '_blank')}
+                      className="px-3 py-2 bg-blue-50 text-blue-600 rounded-lg border border-blue-200 text-xs font-bold hover:bg-blue-100 transition-colors"
+                    >
+                      Test Link 🔗
+                    </button>
+                  )}
+                </div>
+                <p className="text-[10px] text-gray-400 mt-1 italic">Paste a direct PDF link or a "Shared" Google Drive link.</p>
               </div>
 
               <div>

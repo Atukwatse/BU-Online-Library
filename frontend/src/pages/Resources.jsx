@@ -172,7 +172,7 @@ const Resources = () => {
                 
                 <div className="aspect-[3/4] bg-gray-200 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
                   {book.CoverImage ? (
-                    <img src={book.CoverImage} alt={book.Title} className="w-full h-full object-cover" />
+                    <img src={book.CoverImage} alt={book.Title} className="w-full h-full object-contain" />
                   ) : (
                     <Book size={48} className="text-gray-400" />
                   )}
@@ -270,6 +270,17 @@ const Resources = () => {
                   value={formData.CoverImage || ''} 
                   onChange={e => setFormData({...formData, CoverImage: e.target.value})} 
                 />
+                {formData.CoverImage && (
+                  <div className="mt-3 p-2 bg-gray-100 rounded-lg border border-dashed border-gray-300">
+                    <p className="text-[10px] font-bold text-gray-400 mb-2 uppercase">Image Preview:</p>
+                    <img 
+                      src={formData.CoverImage} 
+                      alt="Preview" 
+                      className="h-32 mx-auto object-contain rounded shadow-sm bg-white"
+                      onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=Invalid+Link' }}
+                    />
+                  </div>
+                )}
                 <p className="text-[10px] text-gray-400 mt-1 italic">Copy an image address from Google and paste it here.</p>
               </div>
 

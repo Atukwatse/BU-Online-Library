@@ -223,39 +223,58 @@ const Resources = () => {
 
       {/* Admin Add/Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">{editingBook ? 'Edit Book' : 'Add New Book'}</h2>
-              <button onClick={() => setIsModalOpen(false)}><X className="text-gray-500" /></button>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <h2 className="text-xl font-bold text-primary">{editingBook ? 'Edit Book' : 'Add New Book'}</h2>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <X className="text-gray-500" size={20} />
+              </button>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Scrollable Form Body */}
+            <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto custom-scrollbar">
               <div>
-                <label className="block text-sm font-medium">Title</label>
-                <input required type="text" className="input" value={formData.Title} onChange={e => setFormData({...formData, Title: e.target.value})} />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Book Title</label>
+                <input required type="text" className="input" placeholder="e.g. Advanced Mathematics" value={formData.Title} onChange={e => setFormData({...formData, Title: e.target.value})} />
               </div>
-              <div>
-                <label className="block text-sm font-medium">Author</label>
-                <input required type="text" className="input" value={formData.Author} onChange={e => setFormData({...formData, Author: e.target.value})} />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Author</label>
+                  <input required type="text" className="input" placeholder="John Doe" value={formData.Author} onChange={e => setFormData({...formData, Author: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Category</label>
+                  <select className="input" value={formData.Category} onChange={e => setFormData({...formData, Category: e.target.value})}>
+                    <option value="General">General</option>
+                    <option value="Science">Science</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="History">History</option>
+                    <option value="Arts">Arts</option>
+                  </select>
+                </div>
               </div>
+
               <div>
-                <label className="block text-sm font-medium">Category</label>
-                <input required type="text" className="input" value={formData.Category} onChange={e => setFormData({...formData, Category: e.target.value})} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Cover Image (Optional)</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Cover Image URL</label>
                 <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={(e) => setCoverImageFile(e.target.files[0])}
-                  className="input"
+                  type="url" 
+                  className="input" 
+                  placeholder="https://example.com/image.jpg"
+                  value={formData.CoverImage || ''} 
+                  onChange={e => setFormData({...formData, CoverImage: e.target.value})} 
                 />
-                {coverImageFile && (
-                  <p className="text-xs text-gray-500 mt-1">Selected: {coverImageFile.name}</p>
-                )}
+                <p className="text-[10px] text-gray-400 mt-1 italic">Use a public image link for best performance.</p>
               </div>
+
               <div>
-                <label className="block text-sm font-medium">Book File URL (Google Drive / PDF link)</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">E-Book File URL (PDF/Drive)</label>
                 <input
                   type="url"
                   className="input"
@@ -263,16 +282,23 @@ const Resources = () => {
                   value={formData.FileURL || ''}
                   onChange={e => setFormData({...formData, FileURL: e.target.value})}
                 />
-                <p className="text-xs text-gray-500 mt-1">Paste a Google Drive or direct PDF link so students can read online.</p>
+                <p className="text-[10px] text-gray-400 mt-1 italic">Students will use this to read the book online.</p>
               </div>
+
               <div>
-                <label className="block text-sm font-medium">Status</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Availability Status</label>
                 <select className="input" value={formData.Status} onChange={e => setFormData({...formData, Status: e.target.value})}>
-                  <option value="Available">Available</option>
-                  <option value="Unavailable">Unavailable</option>
+                  <option value="Available">Available ✅</option>
+                  <option value="Unavailable">Unavailable ❌</option>
                 </select>
               </div>
-              <button type="submit" className="btn btn-primary w-full">{editingBook ? 'Update' : 'Save'} Book</button>
+
+              {/* Footer - inside the form but at the bottom */}
+              <div className="pt-4 border-t border-gray-50">
+                <button type="submit" className="btn btn-primary w-full py-3 text-lg shadow-lg hover:shadow-primary/20 transition-all">
+                  {editingBook ? 'Update Book Details' : 'Save New Book'}
+                </button>
+              </div>
             </form>
           </div>
         </div>

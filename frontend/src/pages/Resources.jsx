@@ -262,15 +262,15 @@ const Resources = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Cover Image URL</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Paste Image Link (Cover)</label>
                 <input 
                   type="url" 
                   className="input" 
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="https://example.com/book-cover.jpg"
                   value={formData.CoverImage || ''} 
                   onChange={e => setFormData({...formData, CoverImage: e.target.value})} 
                 />
-                <p className="text-[10px] text-gray-400 mt-1 italic">Use a public image link for best performance.</p>
+                <p className="text-[10px] text-gray-400 mt-1 italic">Copy an image address from Google and paste it here.</p>
               </div>
 
               <div>

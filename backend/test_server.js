@@ -97,6 +97,7 @@ app.post('/api/auth/login', async (req, res) => {
       data: { token, user }
     });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
@@ -152,6 +153,7 @@ app.get('/api/books', async (req, res) => {
     const books = await db.all(query, params);
     return res.json({ status: 'success', data: books, total: books.length });
   } catch (err) {
+    console.error('Error in GET /api/books:', err);
     res.status(500).json({ status: 'error', message: err.message });
   }
 });

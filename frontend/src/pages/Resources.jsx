@@ -27,13 +27,14 @@ const Resources = () => {
   const fetchBooks = async () => {
     try {
       const response = await booksAPI.getAll()
-      setBooks(response.data.data || [])
+      setBooks(response.data || [])
     } catch (error) {
       console.error('Error fetching books:', error)
     } finally {
       setLoading(false)
     }
   }
+  console.log("books:", books)
 
   const handleBorrow = async (bookId) => {
     if (!isAuthenticated) {

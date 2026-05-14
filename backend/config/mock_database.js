@@ -257,7 +257,8 @@ class MockDatabase {
     } else if (sql.trim().toUpperCase().startsWith('DELETE')) {
       return this.handleDelete(sql, params);
     } else {
-      throw new Error('Unsupported query type');
+      console.log(`⚠️ Mock Database: Ignoring unsupported query type: ${sql.substring(0, 20)}...`);
+      return [[]];
     }
   }
 

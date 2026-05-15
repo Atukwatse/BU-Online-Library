@@ -182,6 +182,47 @@ app.get('/api/books/:id', async (req, res) => {
     if (!book) return res.status(404).json({ status: 'error', message: 'Book not found' });
     return res.json({ status: 'success', data: book });
   } catch (err) {
+    console.error('Error in GET /api/books/:id:', err);
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+app.post('/api/books', async (req, res) => {
+  try {
+    const { Title, Author, Category, CoverImage, FileURL, Status } = req.body;
+    const result = await db.run(
+      'INSERT INTO Books (Title, Author, Category, CoverImage, FileURL, Status) VALUES (?, ?, ?, ?, ?, ?)',
+      [Title, Author, Category, CoverImage, FileURL, Status || 'Available']
+    );
+    const newBook = await db.get('SELECT * FROM Books WHERE BookID = ?', [result.lastID]);
+    res.status(201).json({ status: 'success', data: newBook });
+  } catch (err) {
+    console.error('Error in POST /api/books:', err);
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+app.put('/api/books/:id', async (req, res) => {
+  try {
+    const { Title, Author, Category, CoverImage, FileURL, Status } = req.body;
+    await db.run(
+      'UPDATE Books SET Title = ?, Author = ?, Category = ?, CoverImage = ?, FileURL = ?, Status = ? WHERE BookID = ?',
+      [Title, Author, Category, CoverImage, FileURL, Status, parseInt(req.params.id)]
+    );
+    const updatedBook = await db.get('SELECT * FROM Books WHERE BookID = ?', [parseInt(req.params.id)]);
+    res.json({ status: 'success', data: updatedBook });
+  } catch (err) {
+    console.error('Error in PUT /api/books/:id:', err);
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+app.delete('/api/books/:id', async (req, res) => {
+  try {
+    await db.run('DELETE FROM Books WHERE BookID = ?', [parseInt(req.params.id)]);
+    res.json({ status: 'success', message: 'Book deleted successfully' });
+  } catch (err) {
+    console.error('Error in DELETE /api/books/:id:', err);
     res.status(500).json({ status: 'error', message: err.message });
   }
 });

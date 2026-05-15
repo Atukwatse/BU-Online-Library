@@ -208,7 +208,7 @@ app.post('/api/borrowing/requests', async (req, res) => {
     const { bookId } = req.body;
     const book = await db.get('SELECT * FROM Books WHERE BookID = ?', [parseInt(bookId)]);
     if (!book) return res.status(404).json({ status: 'error', message: 'Book not found' });
-    
+
     // Get user from token
     const auth = req.headers.authorization;
     const token = auth ? auth.replace('Bearer ', '') : null;
@@ -220,7 +220,7 @@ app.post('/api/borrowing/requests', async (req, res) => {
       'INSERT INTO Requests (BookID, BookTitle, UserName, UserEmail, RequestDate, Status) VALUES (?, ?, ?, ?, ?, ?)',
       [book.BookID, book.Title, userName, userEmail, new Date().toISOString(), 'Pending']
     );
-    
+
     const newRequest = await db.get('SELECT * FROM Requests WHERE RequestID = ?', [result.lastID]);
     return res.json({ status: 'success', data: newRequest });
   } catch (err) {
@@ -235,7 +235,7 @@ app.get('/api/borrowing/my-requests', async (req, res) => {
     const token = auth ? auth.replace('Bearer ', '') : null;
     const currentUser = token ? tokenStore.get(token) : null;
     if (!currentUser) return res.status(401).json({ status: 'error', message: 'Unauthorized' });
-    
+
     const requests = await db.all('SELECT * FROM Requests WHERE UserEmail = ? ORDER BY RequestDate DESC', [currentUser.Email]);
     return res.json({ status: 'success', data: requests });
   } catch (err) {
@@ -435,7 +435,7 @@ app.delete('/api/books/:id', async (req, res) => {
 app.post('/api/events', async (req, res) => {
   try {
     const { Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees } = req.body;
-    const result = await db.run('INSERT INTO Events (Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+    const result = await db.run('INSERT INTO Events (Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees || 100, 'Active']);
     const newEvent = await db.get('SELECT * FROM Events WHERE EventID = ?', [result.lastID]);
     res.status(201).json({ status: 'success', data: newEvent });
@@ -445,7 +445,7 @@ app.post('/api/events', async (req, res) => {
 app.put('/api/events/:id', async (req, res) => {
   try {
     const { Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees, Status } = req.body;
-    await db.run('UPDATE Events SET Title=?, Description=?, EventDate=?, StartTime=?, EndTime=?, Location=?, MaxAttendees=?, Status=? WHERE EventID=?', 
+    await db.run('UPDATE Events SET Title=?, Description=?, EventDate=?, StartTime=?, EndTime=?, Location=?, MaxAttendees=?, Status=? WHERE EventID=?',
       [Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees, Status, req.params.id]);
     res.json({ status: 'success' });
   } catch (err) { res.status(500).json({ status: 'error', message: err.message }); }

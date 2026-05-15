@@ -201,18 +201,20 @@ const Resources = () => {
                     Borrow
                   </button>
                   <button 
-                    onClick={() =>
-                      book.FileURL
-                        ? window.open(book.FileURL, '_blank', 'noopener,noreferrer')
-                        : alert('No online version available for this book yet.')
-                    }
-                    className={`flex-1 text-sm py-2 rounded font-semibold border ${
+                    onClick={() => {
+                      if (book.FileURL && typeof book.FileURL === 'string' && book.FileURL.startsWith('http')) {
+                        window.open(book.FileURL, '_blank', 'noopener,noreferrer');
+                      } else {
+                        alert('This book\'s online version is currently being prepared by the library team. Please check back soon! 📖');
+                      }
+                    }}
+                    className={`flex-1 text-sm py-2 rounded font-semibold border shadow-sm transition-all active:scale-95 ${
                       book.FileURL
                         ? 'border-primary text-primary hover:bg-primary/10'
-                        : 'border-gray-300 text-gray-400 cursor-not-allowed'
+                        : 'border-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
                   >
-                    Read
+                    Read Online
                   </button>
                 </div>
               </div>

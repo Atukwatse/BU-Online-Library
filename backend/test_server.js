@@ -332,6 +332,32 @@ app.post('/api/events', async (req, res) => {
     const newEvent = await db.get('SELECT * FROM Events WHERE EventID = ?', [result.lastID]);
     return res.status(201).json({ status: 'success', data: newEvent });
   } catch (err) {
+    console.error('Error in POST /api/events:', err);
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+app.put('/api/events/:id', async (req, res) => {
+  try {
+    const { Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees, Status } = req.body;
+    await db.run(
+      'UPDATE Events SET Title=?, Description=?, EventDate=?, StartTime=?, EndTime=?, Location=?, MaxAttendees=?, Status=? WHERE EventID=?',
+      [Title, Description, EventDate, StartTime, EndTime, Location, MaxAttendees || 0, Status || 'Active', parseInt(req.params.id)]
+    );
+    const updated = await db.get('SELECT * FROM Events WHERE EventID = ?', [parseInt(req.params.id)]);
+    res.json({ status: 'success', data: updated });
+  } catch (err) {
+    console.error('Error in PUT /api/events/:id:', err);
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+app.delete('/api/events/:id', async (req, res) => {
+  try {
+    await db.run('DELETE FROM Events WHERE EventID = ?', [parseInt(req.params.id)]);
+    res.json({ status: 'success', message: 'Event deleted successfully' });
+  } catch (err) {
+    console.error('Error in DELETE /api/events/:id:', err);
     res.status(500).json({ status: 'error', message: err.message });
   }
 });

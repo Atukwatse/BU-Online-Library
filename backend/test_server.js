@@ -511,23 +511,30 @@ app.put('/api/admin/users/:id/status', async (req, res) => {
 // ─── Admin Routes ─────────────────────────────────────────────────────────────
 app.get('/api/admin/stats', async (req, res) => {
   try {
-    const [books, users, events, activeUsers] = await Promise.all([
-      db.get('SELECT COUNT(*) as count FROM Books'),
-      db.get('SELECT COUNT(*) as count FROM Users'),
-      db.get('SELECT COUNT(*) as count FROM Events'),
-      db.get('SELECT COUNT(*) as count FROM Users WHERE Status = "Active"')
+    const [booksRes, usersRes, eventsRes, activeRes] = await Promise.all([
+      db.get('SELECT COUNT(*) as total FROM Books'),
+      db.get('SELECT COUNT(*) as total FROM Users'),
+      db.get('SELECT COUNT(*) as total FROM Events'),
+      db.get('SELECT COUNT(*) as total FROM Users WHERE Status = "Active"')
     ]);
+
+    // Use a helper to extract the count safely regardless of property name
+    const getCount = (res) => {
+      if (!res) return 0;
+      return res.total || res.count || res['COUNT(*)'] || 0;
+    };
 
     return res.json({
       status: 'success',
       data: {
-        totalBooks: books.count,
-        totalUsers: users.count,
-        totalEvents: events.count,
-        activeUsers: activeUsers.count,
+        totalBooks: getCount(booksRes),
+        totalUsers: getCount(usersRes),
+        totalEvents: getCount(eventsRes),
+        activeUsers: getCount(activeRes),
       }
     });
   } catch (err) {
+    console.error('Stats error:', err);
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
